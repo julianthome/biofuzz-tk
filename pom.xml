@@ -1,0 +1,40 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.biofuzztk</groupId>
+  <artifactId>biofuzz-tk</artifactId>
+  <version>1.0</version>
+  <name>biofuzz-tk</name>
+  <description>BioFuzz Toolkit helps you to parse strings and to perform operations on the resulting parse trees. It is suited to programs that leverage GP or similar techniques. The parsing and token generation happens based on you context-free grammar description. Further, it supports the two well-known GP operations: Mutation and Crossover.
+
+</description>
+  <dependencies>
+  	<dependency>
+  		<groupId>ch.qos.logback</groupId>
+  		<artifactId>logback-classic</artifactId>
+  		<version>${logback.version}</version>
+  	</dependency>
+  	<dependency>
+  		<groupId>dk.brics.automaton</groupId>
+  		<artifactId>automaton</artifactId>
+  		<version>1.11-8</version>
+  	</dependency>
+  	<dependency>
+  		<groupId>commons-io</groupId>
+  		<artifactId>commons-io</artifactId>
+  		<version>2.4</version>
+  	</dependency>
+  	<dependency>
+  		<groupId>org.apache.commons</groupId>
+  		<artifactId>commons-lang3</artifactId>
+  		<version>3.0</version>
+  	</dependency>
+  	<dependency>
+  		<groupId>junit</groupId>
+  		<artifactId>junit</artifactId>
+  		<version>4.11</version>
+  	</dependency>
+  </dependencies>
+  <properties>
+  	<logback.version>1.0.13</logback.version>
+  </properties>
+</project>
