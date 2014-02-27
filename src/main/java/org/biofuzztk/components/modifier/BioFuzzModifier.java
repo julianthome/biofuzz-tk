@@ -36,11 +36,18 @@ import org.biofuzztk.components.BioFuzzTracer.TraceType;
 import org.biofuzztk.components.modifier.mutators.BioFuzzCaseMutator;
 import org.biofuzztk.components.modifier.mutators.BioFuzzCommentMutator;
 import org.biofuzztk.components.modifier.mutators.BioFuzzQuoteMutator;
-import org.biofuzztk.components.parser.BioFuzzParser;
 import org.biofuzztk.ptree.BioFuzzParseNode;
 import org.biofuzztk.ptree.BioFuzzParseTree;
 import org.biofuzztk.ptree.BioFuzzTokLst;
 
+/**
+ * 
+ * This component is responsible for applying modifications on 
+ * parse trees. In GP, modification is also referred to as mutation.
+ * 
+ * @author julian
+ *
+ */
 public class BioFuzzModifier {
 	
 	final static Logger logger = LoggerFactory.getLogger(BioFuzzModifier.class);
@@ -51,7 +58,14 @@ public class BioFuzzModifier {
 	private List<BioFuzzMutator> quoteMutator = new Vector<BioFuzzMutator>();
 	private List<BioFuzzMutator> tokMutator = new Vector<BioFuzzMutator>();
 
-	
+	/**
+	 * 
+	 * Constructor. It needs access to the CFG-graph, which is the reason
+	 * why we have to pass it as parameter here.
+	 * 
+	 * @param mgr the CFG-graph.
+	 * 
+	 */
 	public BioFuzzModifier(BioFuzzAttackCfgMgr mgr) {
 		this.mgr = mgr;
 		this.tracer = new BioFuzzTracer();
@@ -66,6 +80,16 @@ public class BioFuzzModifier {
 		
 	}
 	
+	/**
+	 * 
+	 * Deletes all tokens of the parse-trees token-list 
+	 * that correspond to a node of a the parse-tree.
+	 * 
+	 * @param tree nodes of this tree will be deleted.
+	 * @param node the node whose corresponding tokens in the parse-tree's
+	 * token-list will be deleted.
+	 * 
+	 */
 	private void doRmTok(BioFuzzParseTree tree, BioFuzzParseNode node) {
 		if (!node.hasChildren())
 			return;
@@ -88,6 +112,18 @@ public class BioFuzzModifier {
 		
 	}
 	
+	/**
+	 * 
+	 * Returns the max token index of a node. Keep in mind that if you
+	 * have a non-terminal node of a parse tree, it can have multiple
+	 * terminal node children.
+	 * 
+	 * @param tree parse-tree whose token-list gets reduced.
+	 * @param node node to check.
+	 * @param max max token index.
+	 * @return the upper bound of the token idx range of the given node.
+	 * 
+	 */
 	private int rmTok(BioFuzzParseTree tree, BioFuzzParseNode node, int max) {
 	
 		int ret = 0;
@@ -103,7 +139,15 @@ public class BioFuzzModifier {
 			return max;
 	}
 	
-	
+	/**
+	 * 
+	 * Inserts a token from a source token-list to a dest token-list.
+	 * 
+	 * @param tokLstSrc token-list of source-parse-tree.
+	 * @param tokLstDest token-list of destination-parse-tree.
+	 * @param srcNode node of source parse-tree.
+	 * 
+	 */
 	private void doInsTok(BioFuzzTokLst tokLstSrc, 
 			BioFuzzTokLst tokLstDest,
 			BioFuzzParseNode srcNode) {
@@ -112,6 +156,18 @@ public class BioFuzzModifier {
 
 	}
 	
+	
+	/**
+	 * 
+	 * Recursive function that inserts a token from a 
+	 * source token-list to a dest token-list.
+	 * 
+	 * @param tokLstSrc token-list of source-parse-tree.
+	 * @param tokLstDest token-list of destination-parse-tree.
+	 * @param srcNode node of source parse-tree.
+	 * @param prev keep track of lastly handled node.
+	 * 
+	 */
 	private void insTok(BioFuzzTokLst tokLstSrc, BioFuzzTokLst tokLstDest,
 			BioFuzzParseNode srcNode, int prev) {
 
@@ -126,6 +182,14 @@ public class BioFuzzModifier {
 		}
 	}
 	
+	/**
+	 * 
+	 * After modifying the token-list, the indices of the corresponding 
+	 * parse-tree nodes have to be sanitized. 
+	 * 
+	 * @param tree the tree to sanitize.
+	 * 
+	 */
 	private void doSanitizeTokIdx(BioFuzzParseTree tree) {
 		BioFuzzQuery qTerm = new BioFuzzQuery() {
 			public Boolean condition(BioFuzzParseNode node) {
@@ -155,8 +219,16 @@ public class BioFuzzModifier {
 		
 	}	
 	
+	/**
+	 * 
+	 * This function is responsible for crossing-over two parent parse-trees.
+	 * 
+	 * @param treeA parent tree A.
+	 * @param treeB parent tree B.
+	 * @return child parse-tree produced by crossing-over parent A and parent B.
+	 */
 	public BioFuzzParseTree 
-	doCrossOver(BioFuzzParseTree treeA, BioFuzzParseTree treeB, BioFuzzParser parser) {
+	doCrossOver(BioFuzzParseTree treeA, BioFuzzParseTree treeB) {
 		Random rand = new Random();
 		
 		// create copies of the original trees
@@ -279,7 +351,14 @@ public class BioFuzzModifier {
 		return out + ")";
 	}
 	
-	
+	/**
+	 * 
+	 * Gets the last added terminal node and mutates it.
+	 * 
+	 * @param tree parse tree to apply mutation on.
+	 * @return true if mutation was applied, false otherwise.
+	 * 
+	 */
 	public boolean
 	mutate(BioFuzzParseTree tree) {
 

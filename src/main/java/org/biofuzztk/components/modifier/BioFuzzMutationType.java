@@ -20,6 +20,21 @@
 
 package org.biofuzztk.components.modifier;
 
+/**
+ * 
+ * Simple interface that returns the mutation type
+ * provided by a mutator.
+ * 
+ * @author julian
+ *
+ */
 public interface BioFuzzMutationType {
+	
+	/**
+	 * 
+	 * Returns the mutation type as a simple string.
+	 * 
+	 * @return the mutation type.
+	 */
 	public String toString();
 }

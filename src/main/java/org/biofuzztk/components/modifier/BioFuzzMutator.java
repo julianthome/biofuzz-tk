@@ -22,9 +22,31 @@ package org.biofuzztk.components.modifier;
 
 import org.biofuzztk.ptree.BioFuzzTokLst;
 
+/**
+ * 
+ * Interface that has to implemented by any BioFuzz mutator.
+ * 
+ * @author julian
+ *
+ */
 public interface BioFuzzMutator {
 	
+	/**
+	 * 
+	 * The mutation function that takes a token list and applies a
+	 * mutation on it.
+	 * 
+	 * @param lst the token list.
+	 */
 	public void mutate(BioFuzzTokLst lst);
+	
+	/**
+	 * 
+	 * Returns the name of the mutator.
+	 * 
+	 * @return the name of the mutator.
+	 * 
+	 */
 	public String getName();
 
 }

@@ -35,6 +35,13 @@ import org.biofuzztk.ptree.BioFuzzParseNode;
 import org.biofuzztk.ptree.BioFuzzParseTree;
 import org.biofuzztk.ptree.BioFuzzTokLst;
 
+/**
+ * 
+ * The token generator to extend parse-trees.
+ * 
+ * @author julian
+ *
+ */
 public class BioFuzzTokGen {
 
 	final static Logger logger = LoggerFactory.getLogger(BioFuzzTokGen.class);
@@ -43,12 +50,29 @@ public class BioFuzzTokGen {
 
 	private BioFuzzAttackCfgMgr mgr;
 
+	/**
+	 * 
+	 * Constructor. It needs access to the CFG-graph, which is the reason
+	 * why we have to pass it as parameter here.
+	 * 
+	 * @param mgr the CFG-graph.
+	 * 
+	 */
 	public BioFuzzTokGen(BioFuzzAttackCfgMgr mgr) {
 		this.mgr = mgr;
 		logger.debug(this.mgr.toString());
 		this.exPnts = new Vector<BioFuzzParseNode> ();
 	}
 
+	/**
+	 * 
+	 * Function that determines the extension point. If a parse-tree is incomplete,
+	 * there is only one possible extension point (the deepest, right-outermost
+	 * incomplete non-terminal). If a parse-tree is complete, there might be
+	 * multiple ones.
+	 * 
+	 * @param tree the parse-tree to extend.
+	 */
 	private void doGetExtPt(BioFuzzParseTree tree) {
 		if(tree.getVal()) {
 			logger.debug("Tree is valid");
@@ -59,7 +83,13 @@ public class BioFuzzTokGen {
 		}
 	}
 
-
+	/**
+	 * 
+	 * A recursive function that determines the extension point 
+	 * for an incomplete (invalid) parse-tree.
+	 * 
+	 * @param node node of a parse-tree to check.
+	 */
 	private void getExtPtInval(BioFuzzParseNode node) {
 
 		logger.debug("inval");
@@ -76,6 +106,13 @@ public class BioFuzzTokGen {
 	}
 
 
+	/**
+	 * 
+	 * A recursive function that determines the extension points
+	 * for a complete (valid) parse-tree.
+	 * 
+	 * @param node node of a parse-tree to check.
+	 */
 	private void getExtPtVal(BioFuzzParseNode node) {
 		logger.debug("val");
 		if(node == null || node.hasChildren() == false)
@@ -96,6 +133,14 @@ public class BioFuzzTokGen {
 
 	}
 
+	/**
+	 *
+	 * Function to extend a given parse-tree.
+	 *
+	 * @param tree the parse-tree to extend.
+	 * @return type of the added node.
+	 * 
+	 */
 	public TagType doExtendTree(BioFuzzParseTree tree) {
 
 		logger.debug("do Extend Tree");
@@ -151,7 +196,16 @@ public class BioFuzzTokGen {
 
 	}
 
-
+	/**
+	 * 
+	 * Function to recursively extend a given parse-tree.
+	 * 
+	 * @param cfg the production rule definition to consider.
+	 * @param node the current node.
+	 * @param tree the parse tree to extend.
+	 * @return type of the lastly added node.
+	 * 
+	 */
 	private TagType extendTree(BioFuzzAttackCfg cfg, BioFuzzParseNode node, 
 			BioFuzzParseTree tree) {
 

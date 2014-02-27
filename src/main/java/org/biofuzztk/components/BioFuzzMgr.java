@@ -28,7 +28,6 @@ import org.slf4j.LoggerFactory;
 
 import org.biofuzztk.cfg.BioFuzzAttackCfgMgr;
 import org.biofuzztk.cfg.BioFuzzConfigReader;
-import org.biofuzztk.cfg.BioFuzzAttackTag.TagType;
 import org.biofuzztk.components.BioFuzzTracer.BioFuzzQuery;
 import org.biofuzztk.components.BioFuzzTracer.TraceType;
 import org.biofuzztk.components.modifier.BioFuzzModifier;
@@ -157,7 +156,7 @@ public class BioFuzzMgr {
 		BioFuzzParseTree tree  = null;
 		validator.doValidate(treeA);
 		validator.doValidate(treeB);
-		tree = modifier.doCrossOver(treeA, treeB, parser);
+		tree = modifier.doCrossOver(treeA, treeB);
 		// tree might be null
 		if(tree != null) {
 			validator.doValidate(tree);

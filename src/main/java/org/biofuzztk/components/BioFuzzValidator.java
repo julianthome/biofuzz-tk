@@ -33,17 +33,40 @@ import org.biofuzztk.cfg.BioFuzzAttackTag.TagType;
 import org.biofuzztk.ptree.BioFuzzParseNode;
 import org.biofuzztk.ptree.BioFuzzParseTree;
 
+/**
+ * 
+ * This component checks whether a given parse-tree is complete
+ * according to a CFG or if it isn't.
+ * 
+ * @author julian
+ *
+ */
 public class BioFuzzValidator {
 	
 	final static Logger logger = LoggerFactory.getLogger(BioFuzzValidator.class);
 	
 	private BioFuzzAttackCfgMgr mgr;
 	
+	/**
+	 * 
+	 * Constructor. It needs access to the CFG-graph, which is the reason
+	 * why we have to pass it as parameter here.
+	 * 
+	 * @param mgr the CFG-graph.
+	 * 
+	 */
 	public BioFuzzValidator(BioFuzzAttackCfgMgr mgr) {
 		this.mgr = mgr;
 		logger.debug(this.mgr.toString());	
 	}
 	
+	/**
+	 * 
+	 * Validates the parse tree. Validation means that it checks the 
+	 * completeness of a parse-tree in accordance to the CFG definition.
+	 * 
+	 * @param tree
+	 */
 	public void doValidate(BioFuzzParseTree tree) {
 		assert(tree != null);
 		BioFuzzParseNode root = tree.getRootNode();
@@ -52,6 +75,18 @@ public class BioFuzzValidator {
 		root.setVal(ret);
 	}
 	
+	/**
+	 * 
+	 * Recursive function that checks the completeness of the parse-tree. It just
+	 * checks the right outermost path from the root node to the deepest right outermost
+	 * non-terminal. We do not have to check the terminal nodes again under the assumption
+	 * that the parse tree passed to doValidate() are generated with BioFuzz anyway. This
+	 * heuristic enables BioFuzz to validate parse-trees very quickly. 
+	 * 
+	 * @param node the node whose sub-nodes to validate.
+	 * @return validation result.
+	 * 
+	 */
 	private Boolean validate(BioFuzzParseNode node) {
         BioFuzzAttackTag atag = node.getAtag();
         BioFuzzAttackTag nxtAtag = null;

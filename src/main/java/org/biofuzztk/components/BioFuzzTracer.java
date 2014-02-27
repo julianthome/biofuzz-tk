@@ -33,10 +33,31 @@ import org.slf4j.LoggerFactory;
 import org.biofuzztk.ptree.BioFuzzParseNode;
 import org.biofuzztk.ptree.BioFuzzParseTree;
 
+/**
+ * 
+ * Component to analyze a parse-tree.
+ * 
+ * @author julian
+ *
+ */
 public class BioFuzzTracer {
 
+	/**
+	 * 
+	 * Search-algorithm to search for nodes in a parse-tree.
+	 * 
+	 * @author julian
+	 *
+	 */
 	public enum TraceType {
-		DFS("Depth-First-Search"), 
+		/**
+		 * Depth first search.
+		 */
+		DFS("Depth-First-Search"),
+		
+		/**
+		 * Breadth first search.
+		 */
 		BFS("Breadth-First-Search");
 
 		private String desc;
@@ -53,6 +74,14 @@ public class BioFuzzTracer {
 
 	final static Logger logger = LoggerFactory.getLogger(BioFuzzTracer.class);
 
+	/**
+	 * 
+	 * Interface for defining queries to efficiently define constraints for a node
+	 * to be satisfied so that it is added to the return set.
+	 * 
+	 * @author julian
+	 *
+	 */
 	public interface BioFuzzQuery {
 		public Boolean condition(BioFuzzParseNode node);
 	}
@@ -61,6 +90,17 @@ public class BioFuzzTracer {
 
 	}
 
+	/**
+	 * 
+	 * Searches for child nodes of a given nodes that satisfy the constraint given
+	 * by the query.
+	 * 
+	 * @param node the node to analyze.
+	 * @param q the search constraint.
+	 * @param type the algorithm to use.
+	 * @return list of nodes that satisfy the query q.
+	 * 
+	 */
 	public List<BioFuzzParseNode> doTraceSubNodes(BioFuzzParseNode node, BioFuzzQuery q, TraceType type) {
 
 
@@ -91,7 +131,17 @@ public class BioFuzzTracer {
 		return null;
 	}
 
-
+	/**
+	 * 
+	 * Searches for nodes in the parse-tree that satisfy the constraint given
+	 * by the query.
+	 * 
+	 * @param tree the parse-tree to analyze.
+	 * @param q the search constraint.
+	 * @param type the algorithm to use.
+	 * @return list of nodes that satisfy the query q.
+	 * 
+	 */
 	public List<BioFuzzParseNode> doTrace(BioFuzzParseTree tree, BioFuzzQuery q, TraceType type) {
 
 
@@ -118,6 +168,16 @@ public class BioFuzzTracer {
 		return null;
 	}
 
+	/**
+	 * 
+	 * Recursive function that searches for child nodes of a given nodes that satisfy the constraint given
+	 * by the query using depth-first-search.
+	 * 
+	 * @param node the node to analyze.
+	 * @param q the search constraint.
+	 * @param list the list of nodes that satisfy the query.
+	 * 
+	 */
 	private void traceDFS(BioFuzzParseNode node,BioFuzzQuery q,List<BioFuzzParseNode> l) {
 
 		if(node == null)
@@ -137,7 +197,16 @@ public class BioFuzzTracer {
 
 	}
 
-
+	/**
+	 * 
+	 * Recursive function that searches for child nodes of a given nodes that satisfy the constraint given
+	 * by the query using breadth-first-search.
+	 * 
+	 * @param node the node to analyze.
+	 * @param q the search constraint.
+	 * @param list the list of nodes that satisfy the query.
+	 * 
+	 */
 	private void traceBFS(BioFuzzParseNode node,BioFuzzQuery q,List<BioFuzzParseNode> l) {
 		
 		Queue<BioFuzzParseNode> queue = new LinkedList<BioFuzzParseNode>();
