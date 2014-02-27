@@ -35,11 +35,19 @@ import org.biofuzztk.components.modifier.BioFuzzModifier;
 import org.biofuzztk.components.parser.BioFuzzParser;
 import org.biofuzztk.components.parser.BioFuzzParserConfig;
 import org.biofuzztk.components.parser.BioFuzzParsingStatus;
-import org.biofuzztk.components.tokenizer.BioFuzzSQLTokenizer;
 import org.biofuzztk.components.tokenizer.BioFuzzTokenizer;
 import org.biofuzztk.ptree.BioFuzzParseNode;
 import org.biofuzztk.ptree.BioFuzzParseTree;
 
+/**
+ * 
+ * The BioFuzz manager is responsible for the generation,
+ * validation, modification and extension of parse-trees.
+ * It is also responsible for searching within a parse-tree.
+ * 
+ * @author julian
+ *
+ */
 public class BioFuzzMgr {
 	
 	private BioFuzzParser parser;
@@ -80,15 +88,39 @@ public class BioFuzzMgr {
 		return this.mgr;
 	}
 	
+	/**
+	 * 
+	 * Takes a string as input at returns a set of parse-trees in accordance
+	 * to the user-defined CFG. The parse can deal with ambiguities.
+	 * 
+	 * @param s the string to parse.
+	 * @return a list of corresponding parse-trees or null.
+	 * 
+	 */
 	public List<BioFuzzParseTree> buildTrees( String s ) {
 		return parser.buildTrees(s);
 	}
 	
+	/**
+	 * 
+	 * This function checks whether a parse-tree is complete according to a
+	 * CFG definition.
+	 * 
+	 * @param tree a parse-tree.
+	 * 
+	 */
 	public void validate( BioFuzzParseTree tree) {
 		logger.debug("do validate");
 		validator.doValidate(tree);
 	}
 	
+	/**
+	 * 
+	 * Extends a given parse-tree by one terminal.
+	 * 
+	 * @param tree the parse tree to extend
+	 * 
+	 */
 	public void extend( BioFuzzParseTree tree ) {
 		// proper extension requires validation before and after
 		logger.debug("extend tree");
@@ -97,10 +129,30 @@ public class BioFuzzMgr {
 		validator.doValidate(tree);
 	}
 	
+	/**
+	 * 
+	 * Picks a terminal and mutates by picking a mutator 
+	 * randomly and applying it.
+	 * 
+	 * @param tree
+	 * @return true if mutation was successful.
+	 * 
+	 */
 	public Boolean mutate(BioFuzzParseTree tree) {
 		return modifier.mutate(tree);
 	}
 	
+	/**
+	 * 
+	 * Performs a cross-over operation on two parse-trees. In this
+	 * context crossing-over two parse-trees means simply the exchange
+	 * of semantically equivalent subtrees based on the CFG.
+	 * 
+	 * @param treeA a parent parse-tree.
+	 * @param treeB a parent parse-tree.
+	 * @return a child parse-tree or null.
+	 * 
+	 */
 	public BioFuzzParseTree crossover (BioFuzzParseTree treeA, BioFuzzParseTree treeB) {
 		BioFuzzParseTree tree  = null;
 		validator.doValidate(treeA);
@@ -114,14 +166,45 @@ public class BioFuzzMgr {
 		return tree;
 	}
 	
+	/**
+	 * 
+	 * Tracing for nodes within the parse tree. The query defines the constraints or
+	 * conditions that have to be fulfilled for a node to be added to the return set.
+	 * 
+	 * @param tree the parse-tree to analyze.
+	 * @param q the query that defines the conditions for a node to be added to the return set.
+	 * @param type search algorithm to be used.
+	 * @return list of nodes that fulfill q or null
+	 * 
+	 */
 	public List<BioFuzzParseNode> trace (BioFuzzParseTree tree, BioFuzzQuery q, TraceType type) {
 		return tracer.doTrace(tree, q, type);
 	}
 	
+	/**
+	 * 
+	 * Given a node n, this function traces for child nodes of n that fulfill q.
+	 * 
+	 * @param node node whose children are analyzed.
+	 * @param q the query that defines the conditions for a node to be added to the return set.
+	 * @param type search algorithm to be used.
+	 * @return list of nodes that fulfill q or null
+	 */
 	public List<BioFuzzParseNode> traceSubNodes (BioFuzzParseNode node, BioFuzzQuery q, TraceType type) {
 		return tracer.doTraceSubNodes(node, q,type);
 	}
 	
+	/**
+	 * 
+	 * Tracing for nodes within the parse tree. The list of queries define the constraints or
+	 * conditions that have to be fulfilled for a node to be added to the return set.
+	 * 
+	 * @param tree parse-tree to analyze.
+	 * @param qlist list of queries (combined with a logical 'AND').
+	 * @param type search algorithm to be used.
+	 * @return list of nodes that fulfill qlist or null
+	 * 
+	 */
 	public List<BioFuzzParseNode> traceAll(BioFuzzParseTree tree, List<BioFuzzQuery> qlist, TraceType type) {
 		
 		assert(tree != null);
@@ -144,6 +227,17 @@ public class BioFuzzMgr {
 		return res;
 	}
 	
+	/**
+	 * 
+	 * Iterates over the given list of parse nodes and their children 
+	 * and checks whether they fulfill the constraints given by the query.
+	 * 
+	 * @param nlist a list of parse nodes.
+	 * @param q the query that defines the conditions for a node to be added to the return set.
+	 * @param type search algorithm to be used.
+	 * @return all nodes of nlist that fulfill q.
+	 * 
+	 */
 	public List<BioFuzzParseNode> traceAll(List<BioFuzzParseNode> nlist, BioFuzzQuery q,TraceType type) {
 		List<BioFuzzParseNode> res = new Vector<BioFuzzParseNode>();
 		assert(nlist != null);
@@ -165,66 +259,66 @@ public class BioFuzzMgr {
 		
 	}
 	
-	
-	public boolean traceAndReplaceAll(BioFuzzParseTree tree, BioFuzzQuery q, List<String> replacements,TraceType type)  {
-		assert(tree != null);
-		assert(q != null);
-		assert(replacements != null);
-		assert(replacements.size() > 0);
-		
-		boolean ret = false;
-		
-		
-		List<BioFuzzQuery> ql = new Vector<BioFuzzQuery>();
-		
-		ql.add(q);
-		
-		ql.add(	new BioFuzzQuery() {
-			public Boolean condition(BioFuzzParseNode node) {
-				return node.getAtagType() == TagType.TERMINAL || node.getAtagType() == TagType.REGEXP;
-		};});
-		
-		List<BioFuzzParseNode> nl = traceAll(tree,ql,type);
-		
-		if(nl == null || nl.size() <= 0)
-			return false;
-		
-		for(BioFuzzParseNode n : nl) {
-			assert(n.getAtagType() == TagType.TERMINAL || n.getAtagType() == TagType.REGEXP );
-			logger.debug("replace");
-			//tree.getTokLst().replace(n.getTokIdx(), replacement);
-			ret = true;
-		}
-		return ret;
-		
-	}
-	
-	
-	public boolean traceAndReplaceAll(BioFuzzParseTree tree, BioFuzzQuery q, String replacement,TraceType type)  {
-		boolean ret = false;
-		List<BioFuzzQuery> ql = new Vector<BioFuzzQuery>();
-		
-		ql.add(q);
-		
-		ql.add(	new BioFuzzQuery() {
-			public Boolean condition(BioFuzzParseNode node) {
-				return node.getAtagType() == TagType.TERMINAL || node.getAtagType() == TagType.REGEXP;
-		};});
-		
-		List<BioFuzzParseNode> nl = traceAll(tree,ql,type);
-		
-		if(nl == null || nl.size() <= 0)
-			return false;
-		
-		for(BioFuzzParseNode n : nl) {
-			assert(n.getAtagType() == TagType.TERMINAL || n.getAtagType() == TagType.REGEXP );
-			logger.debug("replace");
-			tree.getTokLst().replace(n.getTokIdx(), replacement);
-			ret = true;
-		}
-		return ret;
-		
-	}
+
+//	public boolean traceAndReplaceAll(BioFuzzParseTree tree, BioFuzzQuery q, List<String> replacements,TraceType type)  {
+//		assert(tree != null);
+//		assert(q != null);
+//		assert(replacements != null);
+//		assert(replacements.size() > 0);
+//		
+//		boolean ret = false;
+//		
+//		
+//		List<BioFuzzQuery> ql = new Vector<BioFuzzQuery>();
+//		
+//		ql.add(q);
+//		
+//		ql.add(	new BioFuzzQuery() {
+//			public Boolean condition(BioFuzzParseNode node) {
+//				return node.getAtagType() == TagType.TERMINAL || node.getAtagType() == TagType.REGEXP;
+//		};});
+//		
+//		List<BioFuzzParseNode> nl = traceAll(tree,ql,type);
+//		
+//		if(nl == null || nl.size() <= 0)
+//			return false;
+//		
+//		for(BioFuzzParseNode n : nl) {
+//			assert(n.getAtagType() == TagType.TERMINAL || n.getAtagType() == TagType.REGEXP );
+//			logger.debug("replace");
+//			//tree.getTokLst().replace(n.getTokIdx(), replacement);
+//			ret = true;
+//		}
+//		return ret;
+//		
+//	}
+//	
+//	
+//	public boolean traceAndReplaceAll(BioFuzzParseTree tree, BioFuzzQuery q, String replacement,TraceType type)  {
+//		boolean ret = false;
+//		List<BioFuzzQuery> ql = new Vector<BioFuzzQuery>();
+//		
+//		ql.add(q);
+//		
+//		ql.add(	new BioFuzzQuery() {
+//			public Boolean condition(BioFuzzParseNode node) {
+//				return node.getAtagType() == TagType.TERMINAL || node.getAtagType() == TagType.REGEXP;
+//		};});
+//		
+//		List<BioFuzzParseNode> nl = traceAll(tree,ql,type);
+//		
+//		if(nl == null || nl.size() <= 0)
+//			return false;
+//		
+//		for(BioFuzzParseNode n : nl) {
+//			assert(n.getAtagType() == TagType.TERMINAL || n.getAtagType() == TagType.REGEXP );
+//			logger.debug("replace");
+//			tree.getTokLst().replace(n.getTokIdx(), replacement);
+//			ret = true;
+//		}
+//		return ret;
+//		
+//	}
 	
 	@Override
 	public String toString() {

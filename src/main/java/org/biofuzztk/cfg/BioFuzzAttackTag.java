@@ -22,20 +22,81 @@ package org.biofuzztk.cfg;
 
 import org.w3c.dom.Node;
 
+/**
+ * 
+ * A tag is assigned to each node of a CFG-graph. This tag
+ * stores meta information about the tag itself. This is also referenced
+ * in the parse tree. It maps the XML node of the configuration to
+ * the corresponding node in the CFG-graph and to a node of the resulting
+ * parse tree.
+ * 
+ * @author julian
+ *
+ */
 public class BioFuzzAttackTag {
 	
+	/**
+	 * 
+	 * Different node types.
+	 * 
+	 * @author julian
+	 *
+	 */
 	public enum TagType {
+		/**
+		 * a root node (of a parse tree).
+		 */
 		ROOT("ROOT",-1),
+		
+		/**
+		 * start meta node of a production rule.
+		 */
 		START("START",-2), 
+		
+		/**
+		 * stop meta node of a production rule.
+		 */
 		STOP("STOP",-3), 
+		
+		/**
+		 * non-terminal node.
+		 */
 		NON_TERMINAL("NON_TERMINAL",-4), 
+		
+		/**
+		 * terminal node.
+		 */
 		TERMINAL("TERMINAL",-5), 
+		
+		
+		/**
+		 * regular expression node.
+		 */
 		REGEXP("REGEXP",-6),
+		
+		/**
+		 * meta tag for general parsing error.
+		 */
 		ERROR("ERROR", -7),
+		
+		/**
+		 * meta tag for general parsing error - invalid non-terminal.
+		 */
 		NTERROR("NTERROR", -8),
+		
+		/**
+		 * meta tag for general parsing error - invalid terminal.
+		 */
 		TERROR("TERROR", -9),
+		
+		/**
+		 * meta tag for rolling back stack of the pushdown automaton.
+		 */
 		ROLLBACK("ROLLBACK", -10),
-		// The same like Terminal but only visible for the token generator (not for the parser)
+
+		/**
+		 * the same like Terminal but only visible for the token generator (not for the parser).
+		 */
 		TOK_TERMINAL("TOK_TERMINAL",-5);
 		
 		private String desc;
@@ -89,10 +150,22 @@ public class BioFuzzAttackTag {
 		this.node = atag.node;
 	}
 	
+	/**
+	 * 
+	 * Returns the corresponding XML node.
+	 * 
+	 * @return XML node.
+	 */
 	public Node getNode() {
 		return node;
 	}
 
+	/**
+	 * 
+	 * Set the corresponding XML node.
+	 * 
+	 * @return XML node.
+	 */
 	public void setNode(Node node) {
 		this.node = node;
 	}

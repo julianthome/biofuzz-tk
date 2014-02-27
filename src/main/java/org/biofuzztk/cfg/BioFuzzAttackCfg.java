@@ -55,6 +55,7 @@ public class BioFuzzAttackCfg {
 	/**
 	 * 
 	 * @param matDesc a vector of nodes of the graph.
+	 * 
 	 */
 	public void setMatDesc(Vector<BioFuzzAttackTag> matDesc) {
 		this.matDesc = matDesc;
@@ -67,6 +68,7 @@ public class BioFuzzAttackCfg {
 	 * 
 	 * @param a a node in the CFG-graph (node A)
 	 * @param b a node in the CFG-graph (node A's successor)
+	 * 
 	 */
 	public void addPoint(int a, int b) {
 		
@@ -90,6 +92,7 @@ public class BioFuzzAttackCfg {
 	 * 
 	 * @param idx identifies a node (node A).
 	 * @return a list of indices that identify all successors from node A. 
+	 * 
 	 */
 	public List<Number> getChoicesByIdx(int idx) {
 		assert(this.matCoord != null);
@@ -102,6 +105,7 @@ public class BioFuzzAttackCfg {
 	 * Returns the number of nodes.
 	 * 
 	 * @return the number of nodes of the CFG-graph.
+	 * 
 	 */
 	public int getDescNrs() {
 		return this.matDesc.size();
@@ -170,6 +174,7 @@ public class BioFuzzAttackCfg {
 	 * 
 	 * @param descIdx
 	 * @return a node of the CFG-graph.
+	 * 
 	 */
 	public BioFuzzAttackTag getAtagByIdx(int descIdx) {
 		if ( descIdx >= 0 && this.matDesc.size() > descIdx ) {

@@ -36,7 +36,13 @@ import org.slf4j.LoggerFactory;
 import org.biofuzztk.cfg.BioFuzzAttackTag.TagType;
 
 
-
+/**
+ * 
+ * Reading a configuration file and building a corresponding data structure.
+ * 
+ * @author julian
+ *
+ */
 public class BioFuzzConfigReader {
 	
 	final static Logger logger = LoggerFactory.getLogger(BioFuzzConfigReader.class);
@@ -44,6 +50,14 @@ public class BioFuzzConfigReader {
 	public BioFuzzConfigReader() {
 	}
 	
+	/**
+	 *
+	 * Reads a file and returns its corresponding document. 
+	 * 
+	 * @param fname filename to read.
+	 * @return the document.
+	 * 
+	 */
 	private static Document read(String fname) {
 		try {
 			File xmlfile = new File(fname);
@@ -58,13 +72,34 @@ public class BioFuzzConfigReader {
 		return null;
 	}
 	
-	
+	/**
+	 * 
+	 * Creates and globally registers a tag. Creates the mapping between production 
+	 * rule name + definition, XML node and tag type.
+	 * 
+	 * @param node XML node.
+	 * @param label production rule name.
+	 * @param type tag type (terminal, non-terminal, ...).
+	 * @param cfg production rule definition.
+	 * @return an attack tag object.
+	 * 
+	 */
 	private static BioFuzzAttackTag createAndRegAttackTag(Node node, String label, TagType type, BioFuzzAttackCfg cfg) {
 		BioFuzzAttackTag atag = new BioFuzzAttackTag(node,label,type,cfg.getDescNrs());
 		cfg.addAtag(atag);
 		return atag;
 	}
-	
+
+	/**
+	 * 
+	 * Recursive function to build a datastructure from the configuration file.
+	 * 
+	 * @param ruleName name of the production rule.
+	 * @param node XML node.
+	 * @param cfg production rule definition.
+	 * @param predStack a stack to keep track of the predecessors.
+	 * 
+	 */
 	private static void handleTok(String ruleName, Node node, BioFuzzAttackCfg cfg, 
 			Stack<BioFuzzAttackTag> predStack) {
 		
@@ -167,10 +202,6 @@ public class BioFuzzConfigReader {
 		break;
 		case "ONEOF": {
 			logger.debug("ONEOF");
-//			BioFuzzAttackTag lelem = null;
-//			if (predStack.size() > 0)
-//				lelem = predStack.pop();
-			
 
 			// Create a copy of predecessors
 			Stack <BioFuzzAttackTag> predStackCp = new Stack <BioFuzzAttackTag>();
@@ -181,9 +212,7 @@ public class BioFuzzConfigReader {
 			while(ofson != null) {
 				Stack <BioFuzzAttackTag> ofstack = new Stack <BioFuzzAttackTag>();
 				
-//				if (lelem != null)
-//					ofstack.push(lelem);
-				
+
 				ofstack.addAll(predStackCp);
 				handleTok(ruleName,ofson, cfg, ofstack);
 				
@@ -235,6 +264,16 @@ public class BioFuzzConfigReader {
 		
 	}
 	
+	/**
+	 * 
+	 * A helper that searches a sibling node in the XML document by
+	 * its name.
+	 * 
+	 * @param sibling current node.
+	 * @param name name of the node to search.
+	 * @return the node with the given name or null if the node was not found.
+	 * 
+	 */
 	private static Node getNxtNodeByName(Node sibling, String name) {
 		
 		Node nxt = sibling;
@@ -249,6 +288,14 @@ public class BioFuzzConfigReader {
 		return null;
 	}
 	
+	/**
+	 * 
+	 * Helper to return the sibling of the current XML node.
+	 * 
+	 * @param sibling the current node.
+	 * @return the sibling node of the current one.
+	 * 
+	 */
 	private static Node getNxtNode(Node sibling) {
 		Node nxt = sibling.getNextSibling();
 		
@@ -261,6 +308,14 @@ public class BioFuzzConfigReader {
 		return null;
 	}
 	
+	/**
+	 * 
+	 * Helper to return the child node of the current one.
+	 * 
+	 * @param father of the current node.
+	 * @return the child node or null if not present.
+	 * 
+	 */
 	private static Node getNxtChildNode(Node father) {
 		Node nxt = father.getFirstChild();
 		
@@ -274,6 +329,14 @@ public class BioFuzzConfigReader {
 	}
 	
 	
+	/**
+	 * 
+	 * Read the configuration file and create a datastructure from it.
+	 * 
+	 * @param file the path to the file.
+	 * @return datastructure that resembles the CFG-graph.
+	 * 
+	 */
 	public static BioFuzzAttackCfgMgr readConfigFile(String file) {
 		System.out.println("parse");
 		Document doc = read(file);

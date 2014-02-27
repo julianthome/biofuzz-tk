@@ -28,22 +28,53 @@ import dk.brics.automaton.State;
 import dk.brics.automaton.Transition;
 import dk.brics.automaton.RegExp;
 
+/**
+ * 
+ * Helper class for generating strings based on regular
+ * expressions. This class uses http://www.brics.dk/automaton/.
+ * 
+ * @author julian
+ *
+ */
 public class BioFuzzRexpGen {
 
     private final Automaton sm;
     private final Random rgen;
 
+    /**
+     * 
+     * Constructor.
+     * 
+     * @param regex the regexp definition.
+     * 
+     */
     public BioFuzzRexpGen(String regex) {
         this.sm = new RegExp(regex).toAutomaton();
         this.rgen = new Random();
     }
 
+    /**
+     * 
+     * Generates the string based on regex that is passed as
+     * a parameter to the constructor.
+     * 
+     * @return the generated string.
+     * 
+     */
     public String doGenerate() {
         StringBuilder builder = new StringBuilder();
         generate(builder, sm.getInitialState());
         return builder.toString();
     }
 
+    /**
+     * 
+     * Recursive helper function that interacts with the dk.brics libraries
+     * to generate the string based on the regular expression.
+     * 
+     * @param sb a string builder.
+     * @param s a state of dk.brics's state machine.
+     */
     private void generate(StringBuilder sb, State s) {
     	
         List<Transition> transitions = s.getSortedTransitions(true);
@@ -67,7 +98,15 @@ public class BioFuzzRexpGen {
         generate(sb, t.getDest());
     }
 
-    
+    /**
+     * 
+     * A helper that returns a random integer within a given range.
+     * 
+     * @param min lower bound.
+     * @param max upper bound.
+     * @param random random generator.
+     * @return a randomly generated int.
+     */
     public final static int getRandomInt(int min, int max, Random random) {
         return (min + Math.round(random.nextFloat() * (max - min)));
     }

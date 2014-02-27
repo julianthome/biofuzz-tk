@@ -24,15 +24,36 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+
+/**
+ * 
+ * This is a class that resembles a whole context-free grammar (CFG). A
+ * grammar is represented as a set of CFG-graphs (one for each production
+ * rule). 
+ * 
+ * @author julian
+ *
+ */
 public class BioFuzzAttackCfgMgr {
-	
+	/**
+	 * 
+	 * Maps the name of a production rule to its definition.
+	 * 
+	 */
 	private Map<String,BioFuzzAttackCfg> cfgMap;
 	
 	public BioFuzzAttackCfgMgr() {
 		this.cfgMap = new HashMap<String,BioFuzzAttackCfg>();
 	}
 	
-	
+	/**
+	 * 
+	 * Add a new production rule.
+	 * 
+	 * @param name name of the production rule.
+	 * @return return the corresponding definition.
+	 * 
+	 */
 	public BioFuzzAttackCfg createAttackCfg(String name) {
 		BioFuzzAttackCfg cfg = new BioFuzzAttackCfg();
 		cfgMap.put(name, cfg);
@@ -40,15 +61,36 @@ public class BioFuzzAttackCfgMgr {
 	}
 	
 	
-	
+	/**
+	 * 
+	 * Returns all production rule name.
+	 * 
+	 * @return set of production rules.
+	 * 
+	 */
 	public Set<String> getKeys() {
 		return this.cfgMap.keySet();
 	}
 
+	/**
+	 * 
+	 * Returns the definition of a given production rule.
+	 * 
+	 * @param key name of the production rule.
+	 * @return the corresponding defintion of the production rule.
+	 * 
+	 */
 	public BioFuzzAttackCfg getAttackCfgByKey(String key) {
 		return this.cfgMap.get(key);
 	}
 
+	/**
+	 * 
+	 * A setter for cfgMap.
+	 * 
+	 * @param cfgMap
+	 * 
+	 */
 	public void setCfgMap(HashMap<String, BioFuzzAttackCfg> cfgMap) {
 		this.cfgMap = cfgMap;
 	}
