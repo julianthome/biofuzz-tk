@@ -23,6 +23,13 @@ package org.biofuzztk.components.modifier.mutators;
 import org.biofuzztk.components.modifier.BioFuzzMutator;
 import org.biofuzztk.ptree.BioFuzzTokLst;
 
+/**
+ * 
+ * Mutator that changes the token delimiter to comments.
+ * 
+ * @author julian
+ *
+ */
 public class BioFuzzCommentMutator implements BioFuzzMutator {
 	
 	@Override

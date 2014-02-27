@@ -25,8 +25,14 @@ import java.util.Vector;
 
 import org.biofuzztk.ptree.BioFuzzParseTree;
 
-import ch.qos.logback.classic.Logger;
 
+/**
+ * 
+ * The stack manager can be seen as a set of push-down automatons. 
+ * 
+ * @author julian
+ *
+ */
 public class BioFuzzStackMgr {
 	
 	private List<BioFuzzTupleStack> stackLst;
@@ -42,12 +48,28 @@ public class BioFuzzStackMgr {
 		
 	}
 	
+	/**
+	 * 
+	 * Creates a new stack, registers and returns it.
+	 * 
+	 * @param key the name of the corresponding attack-tag.
+	 * @param cur the token index of the current string in the token list.
+	 * @return a new tuple stack.
+	 * 
+	 */
 	public BioFuzzTupleStack createAndGetStack(String key, int cur) {
 		BioFuzzTupleStack tupStack = new BioFuzzTupleStack(key, cur);
 		this.stackLst.add(tupStack);
 		return tupStack;
 	}
 	
+	/**
+	 * 
+	 * Creates a copy of the tuple stack and returns it.
+	 * 
+	 * @param t a tuple stack.
+	 * @return a copy of the tuple stack t.
+	 */
 	public BioFuzzTupleStack copyAndGetStack(BioFuzzTupleStack t) {
 		BioFuzzTupleStack tupStack = new BioFuzzTupleStack(t);
 		this.stackLst.add(tupStack);
@@ -55,14 +77,34 @@ public class BioFuzzStackMgr {
 	}
 	
 	
+	/**
+	 * 
+	 * Getter.
+	 * 
+	 * @return  the amount of push-down automatons that the stack
+	 * manager keeps track of.
+	 */
 	public int getSize() {
 		return stackLst.size();
 	}
 	
+	/**
+	 * 
+	 * Getter.
+	 * 
+	 * @param idx index of the tuple stack to return.
+	 * @return the tuple stack with index idx.
+	 */
 	public BioFuzzTupleStack getTupleStack(int idx) {
 		return stackLst.get(idx);
 	}
 	
+	/**
+	 * 
+	 * The reduce method removes all push-down automatons with
+	 * status INVALID from the stack manager.
+	 * 
+	 */
 	public void reduce() {
 		List<BioFuzzTupleStack> stackLstTmp = new Vector<BioFuzzTupleStack>();
 		
@@ -96,10 +138,25 @@ public class BioFuzzStackMgr {
 
 	}
 	
+	/**
+	 * 
+	 * Getter.
+	 * 
+	 * @return the amount of push-down automatons that are IN_PROGRESS.
+	 * 
+	 */
 	public int getInProgress() {
 		return this.progressCnt;
 	}
 	
+	/**
+	 * 
+	 * Getter.
+	 * 
+	 * @param minQual all parse trees with this parsing status are considered.
+	 * @return final list of parse trees.
+	 * 
+	 */
 	public List<BioFuzzParseTree> getGeneratedTrees(BioFuzzParsingStatus minQual) {
 		
 		List<BioFuzzParseTree> trees = new Vector<BioFuzzParseTree>();

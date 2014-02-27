@@ -31,6 +31,13 @@ import org.biofuzztk.cfg.BioFuzzAttackCfg;
 import org.biofuzztk.cfg.BioFuzzAttackTag;
 import org.biofuzztk.cfg.BioFuzzAttackTag.TagType;
 
+/**
+ * 
+ * A node of the parse-tree.
+ * 
+ * @author julian
+ *
+ */
 public class BioFuzzParseNode {
 	
 	final static Logger logger = LoggerFactory.getLogger(BioFuzzParseNode.class);
@@ -56,6 +63,17 @@ public class BioFuzzParseNode {
 		this.atag = atag;
 	}
 
+	/**
+	 * 
+	 * Constructor.
+	 * 
+	 * @param myTree parse-tree.
+	 * @param cfg production rule definition where this node corresponds to.
+	 * @param descIdx idx of node in production rule definition where this nodes corresponds to.
+	 * @param tokIdx idx of token in token-list where this node corresponds to.
+	 * @param id unique id.
+	 * 
+	 */
 	public BioFuzzParseNode(BioFuzzParseTree myTree, 
 			BioFuzzAttackCfg cfg, int descIdx, int tokIdx, int id) {
 		this.myTree = myTree;
@@ -70,10 +88,7 @@ public class BioFuzzParseNode {
 
 	}
 	
-	/**
-	 * Only for root
-	 * @param myTree
-	 */
+
 	public BioFuzzParseNode(BioFuzzParseTree myTree){
 		this.myTree = myTree;
 		this.tokIdx = 0;
@@ -87,12 +102,7 @@ public class BioFuzzParseNode {
 		this.atag = new BioFuzzAttackTag();
 	}	
 	
-	/**
-	 * Copy tree
-	 * @param myTree
-	 * @param parent
-	 * @param node
-	 */
+
 	public BioFuzzParseNode(BioFuzzParseTree myTree,  BioFuzzParseNode parent, BioFuzzParseNode node){
 		this.myTree = myTree;
 		this.tokIdx = node.tokIdx;
@@ -124,6 +134,12 @@ public class BioFuzzParseNode {
 		
 	}
 	
+	/**
+	 * 
+	 * get possible descendants.
+	 * @return list of descendants.
+	 * 
+	 */
 	public List<Number> getChoices() {
 		assert(this.cfg != null);
 		return this.cfg.getChoicesByIdx(this.descIdx);
@@ -149,7 +165,13 @@ public class BioFuzzParseNode {
 		this.descIdx = descIdx;
 	}
 
-	
+	/**
+	 * 
+	 * Getter.
+	 * 
+	 * @return right outermost child node.
+	 * 
+	 */
 	public BioFuzzParseNode getRoc() {
 		if(this.children != null) {
 			return children.get(children.size()-1);
@@ -164,6 +186,13 @@ public class BioFuzzParseNode {
 		return 0;
 	}
 	
+	/**
+	 * 
+	 * Append child.
+	 * 
+	 * @param child new child node.
+	 * 
+	 */
 	public void addChild(BioFuzzParseNode child) {
 		
 		if(child.getAtagType() == TagType.NON_TERMINAL){

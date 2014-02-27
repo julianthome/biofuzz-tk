@@ -20,11 +20,33 @@
 
 package org.biofuzztk.components.parser;
 
+/**
+ * 
+ * The different parsing statuses. 
+ * 
+ * @author julian
+ *
+ */
 public enum BioFuzzParsingStatus {
 	
+	/**
+	 * string is does not match CFG.
+	 */
 	INVALID("INVALID"),
+	
+	/**
+	 * parse-tree for string is still under construction.
+	 */
 	IN_PROGRESS("IN_PROGRESS"), 
+	
+	/**
+	 * all terminal nodes are consumed.
+	 */
 	FINISHED("FINISHED"),
+	
+	/**
+	 * all terminal nodes are consumed and parse tree is complete.
+	 */
 	VALID("VALID");
 	
 	private String desc;

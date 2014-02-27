@@ -31,6 +31,13 @@ import org.biofuzztk.ptree.BioFuzzParseNode;
 import org.biofuzztk.ptree.BioFuzzParseTree;
 import org.biofuzztk.ptree.BioFuzzTokLst;
 
+/**
+ * 
+ * A push-down automaton.
+ * 
+ * @author julian
+ *
+ */
 public class BioFuzzTupleStack {
     private Stack<BioFuzzParsingTuple> tstack;
     private BioFuzzParsingStatus status;
@@ -42,6 +49,14 @@ public class BioFuzzTupleStack {
     
     final static Logger logger = LoggerFactory.getLogger(BioFuzzTupleStack.class);
     
+    /**
+     * 
+     * Constructor.
+     * 
+     * @param key name of attack-tag.
+     * @param cur current index of token of token-list.
+     * 
+     */
     public BioFuzzTupleStack(String key, int cur) {
     	this.tstack = new Stack<BioFuzzParsingTuple>();
     	this.status = BioFuzzParsingStatus.IN_PROGRESS;
@@ -54,6 +69,14 @@ public class BioFuzzTupleStack {
     	this.nodeCnt = 1;
     }
     
+    
+    /**
+     * 
+     * Copy constructor.
+     * 
+     * @param t a tuple-stack.
+     * 
+     */
     public BioFuzzTupleStack(BioFuzzTupleStack t) {	    	
     	this(t.key, t.cur);
     	assert(t.ptr != null);
@@ -73,6 +96,15 @@ public class BioFuzzTupleStack {
     	assert(this.ptr != null);
     }
     
+    /**
+     * 
+     * Pushes a new ruleset onto the stack.
+     * 
+     * @param cfg production rule defintion.
+     * @param t tag type.
+     * @param lfr index of last firing rule.
+     * 
+     */
     public void pushTuple(BioFuzzAttackCfg cfg, TagType t, int lfr) {
     	BioFuzzParsingTuple tup = new BioFuzzParsingTuple(cfg,lfr);
     	this.tstack.push(tup);
@@ -112,6 +144,12 @@ public class BioFuzzTupleStack {
     	
     }
     
+    /**
+     * 
+     * Once the end of a production rule defintion is reached, the stack
+     * is reduced by this function.
+     * 
+     */
     public void rollback() {
 		BioFuzzParsingTuple tmp = this.popTuple();
 

@@ -20,13 +20,28 @@
 
 package org.biofuzztk.components.parser;
 
-
+/**
+ * 
+ * The parser configuration.
+ * 
+ * @author julian
+ *
+ */
 public class BioFuzzParserConfig {
 
 	private BioFuzzParsingStatus minQual = BioFuzzParsingStatus.INVALID;
 	private int maxIter = 0;
 	private int maxSsize = 0;
 	
+	/**
+	 * 
+	 * Constructor.
+	 * 
+	 * @param maxSsize limit of stack size. If exceeded the parsing process is stopped.
+	 * @param minQuality lower bound of parsing status to consider.
+	 * @param maxIter upper bound of parsing iterations.
+	 * 
+	 */
 	public BioFuzzParserConfig(int maxSsize, BioFuzzParsingStatus minQuality, int maxIter) {
 
 		this.minQual = minQuality;

@@ -22,9 +22,23 @@ package org.biofuzztk.components.parser;
 
 import org.biofuzztk.cfg.BioFuzzAttackCfg;
 
-
+/**
+ * 
+ * For keeping track of fired rules of a production rules.
+ * 
+ * @author julian
+ *
+ */
 public class BioFuzzParsingTuple {
+	
+	/**
+	 * production rule definition.
+	 */
 	private BioFuzzAttackCfg cfg;
+	
+	/**
+	 * last fired rules.
+	 */
 	private int lfr;
 	
 	public BioFuzzParsingTuple(BioFuzzAttackCfg cfg, int lfr) {

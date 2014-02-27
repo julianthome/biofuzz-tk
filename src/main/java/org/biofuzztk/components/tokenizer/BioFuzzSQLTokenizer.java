@@ -25,7 +25,13 @@ import java.util.ArrayList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
+/**
+ * 
+ * Tokenizer for SQL.
+ * 
+ * @author julian
+ *
+ */
 public class BioFuzzSQLTokenizer implements BioFuzzTokenizer {
 	
 	final static Logger logger = LoggerFactory.getLogger(BioFuzzSQLTokenizer.class);

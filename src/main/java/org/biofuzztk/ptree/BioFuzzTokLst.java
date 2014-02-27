@@ -29,7 +29,13 @@ import java.util.List;
 import java.util.Set;
 import java.util.Stack;
 
-
+/**
+ * 
+ * A token list that manages access to the tokens.
+ * 
+ * @author julian
+ *
+ */
 public class BioFuzzTokLst {
 	
 	private List<String> tokLst;

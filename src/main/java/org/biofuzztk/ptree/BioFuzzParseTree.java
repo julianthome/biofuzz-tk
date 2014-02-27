@@ -39,6 +39,13 @@ import org.biofuzztk.cfg.BioFuzzAttackTag;
 import org.biofuzztk.cfg.BioFuzzAttackTag.TagType;
 import org.biofuzztk.ptree.BioFuzzParseNode;
 
+/**
+ * 
+ * A parse-tree.
+ * 
+ * @author julian
+ *
+ */
 public class BioFuzzParseTree {
 
 	final static Logger logger = LoggerFactory.getLogger(BioFuzzParseTree.class);
@@ -111,10 +118,24 @@ public class BioFuzzParseTree {
 		return this.tokLst;
 	}
 
+	/**
+	 * 
+	 * Getter.
+	 * 
+	 * @return set of all non-terminal nodes.
+	 * 
+	 */
 	public Set<String> getNtSet() {
 		return this.ntSet;
 	}
 	
+	/**
+	 * 
+	 * Getter.
+	 * 
+	 * @return set of all non-terminal nodes that appear after the prefix barrier.
+	 * 
+	 */
 	public Set<String> getNtSuffixSet() {
 		return this.ntSuffixSet;
 		
@@ -140,6 +161,11 @@ public class BioFuzzParseTree {
 		this.pfxBarrier = pfxBarrier;
 	}
 
+	/**
+	 * 
+	 * Determines all non-terminal nodes.
+	 * 
+	 */
 	public void doResetNtSet() {
 		this.ntDict.clear();
 		this.ntSet.clear();
@@ -148,11 +174,22 @@ public class BioFuzzParseTree {
 		resetNtSet(this.root);
 	}
 	
+	/**
+	 * Getter
+	 * 
+	 * @return validity of the parse-tree.
+	 * 
+	 */
 	public boolean getVal() {
 		assert(this.root != null);
 		return this.root.getVal();
 	}
 
+	/**
+	 * 
+	 * Recursively determines all non-terminal nodes.
+	 * 
+	 */
 	private void resetNtSet(BioFuzzParseNode node) {
 		assert(node != null);
 		BioFuzzAttackTag atag = node.getAtag();
@@ -219,6 +256,13 @@ public class BioFuzzParseTree {
 
 	}
 
+	/**
+	 * 
+	 * Getter.
+	 * 
+	 * @return the amount of nodes.
+	 * 
+	 */
 	public int doGetNodeCnt() {
 		assert(this.root != null);
 		return getNodeCnt(this.root);

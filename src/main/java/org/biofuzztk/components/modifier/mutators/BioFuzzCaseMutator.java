@@ -28,6 +28,16 @@ import org.biofuzztk.ptree.BioFuzzTokLst;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * 
+ * Mutator that changes the case of a terminal node:
+ * 	- uppercase
+ * 	- lowercase
+ * 	- mixed case
+ * 
+ * @author julian
+ *
+ */
 public class BioFuzzCaseMutator implements BioFuzzMutator {
 
 	public enum MutationType implements BioFuzzMutationType {

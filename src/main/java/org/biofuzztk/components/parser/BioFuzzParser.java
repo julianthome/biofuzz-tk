@@ -30,12 +30,19 @@ import org.biofuzztk.cfg.BioFuzzAttackCfg;
 import org.biofuzztk.cfg.BioFuzzAttackCfgMgr;
 import org.biofuzztk.cfg.BioFuzzAttackTag;
 import org.biofuzztk.cfg.BioFuzzAttackTag.TagType;
-import org.biofuzztk.components.tokenizer.BioFuzzSQLTokenizer;
 import org.biofuzztk.components.tokenizer.BioFuzzTokenizer;
 import org.biofuzztk.ptree.BioFuzzParseTree;
 import org.biofuzztk.ptree.BioFuzzTokLst;
 import org.biofuzztk.utils.BioFuzzUtils;
 
+/**
+ * 
+ * The parser that takes generates a parse-tree from a string
+ * based on a context-free grammar (CFG).
+ * 
+ * @author julian
+ *
+ */
 public class BioFuzzParser {
 	
 	final static Logger logger = LoggerFactory.getLogger(BioFuzzParser.class);
@@ -49,20 +56,15 @@ public class BioFuzzParser {
 	
 	BioFuzzParserConfig config = null;
 	
-/**	public BioFuzzParser(BioFuzzAttackCfgMgr mgr, BioFuzzParserConfig config) {
-		this.mgr = mgr;
-		this.config = config;
-		
-		
-		this.minQual = config.getMinQual();
-		this.maxSSize = config.getMaxSsize();
-		this.maxIter = config.getMaxIter();
-		this.tokenizer = new BioFuzzSQLTokenizer();
-		
-		logger.debug("Parser Config :" + this.config.toString());
-		//logger.debug(this.mgr.toString());	
-	}
-**/
+	/**
+	 * 
+	 * Constructor.
+	 * 
+	 * @param mgr the CFG-graph.
+	 * @param config the parser configuration.
+	 * @param tokenizer the tokenizer to tokenize the string before parsing it.
+	 * 
+	 */
 	public BioFuzzParser(BioFuzzAttackCfgMgr mgr, BioFuzzParserConfig config, BioFuzzTokenizer tokenizer) {
 		this.mgr = mgr;
 		this.config = config;
@@ -77,6 +79,14 @@ public class BioFuzzParser {
 		//logger.debug(this.mgr.toString());	
 	}
 	
+	/**
+	 * 
+	 * Tokenize the given string.
+	 * 
+	 * @param s the string to tokenize.
+	 * @return an array of string where each field contains a token.
+	 * 
+	 */
 	public String[] tokenize(String s) {
 		
 		logger.debug(s);
@@ -84,16 +94,36 @@ public class BioFuzzParser {
 		return this.tokenizer.tokenize(s);
 	}
 	
-	
+	/**
+	 * 
+	 * Takes a string and creates a list of parse-trees from it. It might
+	 * be that there are ambiguities, i.e. there are different rules in
+	 * the CFG that produce the same string. This is the reason why this
+	 * function returns a list of parse-trees.
+	 * 
+	 * @param s the string to parse.
+	 * @return a list of parse-trees that represent the string s.
+	 * 
+	 */
 	public List<BioFuzzParseTree> buildTrees(String s) {
 		String tokLst[] = tokenize(s);
 		assert(tokLst.length > 0);
 		logger.debug("build trees: " + s);
-		logger.debug("tokLst: " + BioFuzzUtils.strArrayToStr(tokLst));
+		//logger.debug("tokLst: " + BioFuzzUtils.strArrayToStr(tokLst));
 		
 		return intialize(tokLst);
 	}
 	
+	/**
+	 * 
+	 * Adds the initial production rule S on a tuple stack and 
+	 * then analyzes all paths through the CFG that can produce
+	 * tokLst.
+	 * 
+	 * @param tokLst the token list to check.
+	 * @return a list of parse-trees that produce tokLst.
+	 * 
+	 */
 	private List<BioFuzzParseTree> intialize(String[] tokLst) {
 		BioFuzzStackMgr smgr = null;
 		smgr = new BioFuzzStackMgr();
@@ -137,7 +167,15 @@ public class BioFuzzParser {
 		return list;
 	}
 	
-	
+	/**
+	 * 
+	 * Manages the set of the push-down automatons.
+	 * 
+	 * @param smgr the set of stacks, each of them representing a different ruleset that might produce tokLst.
+	 * @param tokLst the token list.
+	 * @return type of the lastly added tag.
+	 * 
+	 */
 	private TagType traversePaths(BioFuzzStackMgr smgr, BioFuzzTokLst tokLst) {
 		
 		logger.debug("TokLst: " + tokLst.toString());
@@ -218,13 +256,34 @@ public class BioFuzzParser {
 		
 	}
 
-	
+	/**
+	 * 
+	 * Creates a copy of tstack and adds it to the stack manager. This function is called
+	 * to create a fork, i.e. to follow different paths through the CFG from a given 
+	 * node.
+	 * 
+	 * @param smgr stack manager that contains all push-down automatons.
+	 * @param tstack current stack.
+	 * @param fork if true a fork is created.
+	 * @return a copy of tstack or tstack itself.
+	 * 
+	 */
 	private BioFuzzTupleStack forkTupleStack(BioFuzzStackMgr smgr, BioFuzzTupleStack tstack, boolean fork) {
 		
 		return fork ? smgr.copyAndGetStack(tstack) : tstack;
 		
 	}
 	
+	/**
+	 * 
+	 * This function matches tokens to the CFG-definition.
+	 * 
+	 * @param tokLst the token-list.
+	 * @param smgr the stack manager.
+	 * @param tstack the currently active stack.
+	 * @return the number of matches.
+	 * 
+	 */
 	private int match(BioFuzzTokLst tokLst, BioFuzzStackMgr smgr, BioFuzzTupleStack tstack) {
 		
 		int matchCnt = 0;

@@ -30,6 +30,13 @@ import org.biofuzztk.components.modifier.BioFuzzMutationType;
 import org.biofuzztk.components.modifier.BioFuzzMutator;
 import org.biofuzztk.ptree.BioFuzzTokLst;
 
+/**
+ * 
+ * Mutator that changes the quote representation.
+ * 
+ * @author julian
+ *
+ */
 public class BioFuzzQuoteMutator implements BioFuzzMutator {
 
 	public enum MutationType implements BioFuzzMutationType {
