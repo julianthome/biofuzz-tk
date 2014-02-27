@@ -1,0 +1,62 @@
+<attackcfg>
+
+        <rule>
+	        <key label="S"/>	
+	        <val>
+	        	<start/>
+					<var label="term"/>
+	        	<stop/>
+	        </val>
+        </rule>
+        
+        
+        <rule>
+	        <key label="number"/>	
+	        <val>
+	        	<start/>
+					<regexp label="[0-9]{1,10}"/>
+	        	<stop/>
+	        </val>
+        </rule>
+        
+         <rule>
+	        <key label="operator"/>	
+	        <val>
+	        	<start/>
+					<oneof>
+						<const label="+"/>
+						<const label="-"/>
+						<const label="*"/>
+						<const label="/"/>
+					</oneof>
+	        	<stop/>
+	        </val>
+        </rule>
+        
+        <rule>
+	        <key label="term"/>	
+	        <val>
+	        	<start/>
+	        		<oneof>
+	        		
+	        			<var label="number"/>
+	        		
+	        			<grp>
+							<const label="("/>
+							<var label="term"/>
+							<const label=")"/>
+						</grp>
+	        		
+		        		<grp>
+							<var label="term"/>
+							<var label="operator"/>
+							<var label="term"/>
+						</grp>
+						
+					</oneof>
+	        	<stop/>
+	        </val>
+        </rule>
+        
+   
+</attackcfg>
