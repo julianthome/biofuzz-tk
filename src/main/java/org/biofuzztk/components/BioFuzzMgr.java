@@ -35,6 +35,8 @@ import org.biofuzztk.components.modifier.BioFuzzModifier;
 import org.biofuzztk.components.parser.BioFuzzParser;
 import org.biofuzztk.components.parser.BioFuzzParserConfig;
 import org.biofuzztk.components.parser.BioFuzzParsingStatus;
+import org.biofuzztk.components.tokenizer.BioFuzzSQLTokenizer;
+import org.biofuzztk.components.tokenizer.BioFuzzTokenizer;
 import org.biofuzztk.ptree.BioFuzzParseNode;
 import org.biofuzztk.ptree.BioFuzzParseTree;
 
@@ -52,14 +54,15 @@ public class BioFuzzMgr {
 	
 	final static Logger logger = LoggerFactory.getLogger(BioFuzzMgr.class);
 	
-	public BioFuzzMgr(String fname) {
+	public BioFuzzMgr(String fname, BioFuzzTokenizer tokenizer) {
 		
 		this.mgr = BioFuzzConfigReader.readConfigFile(fname);
 		assert(this.mgr != null);
+		assert(tokenizer != null);
 		
-		this.config = new BioFuzzParserConfig(150, BioFuzzParsingStatus.FINISHED, 310);
+		this.config = new BioFuzzParserConfig(150, BioFuzzParsingStatus.FINISHED, 400);
 		
-		this.parser = new BioFuzzParser(mgr,this.config);
+		this.parser = new BioFuzzParser(mgr,this.config, tokenizer);
 		this.generator = new BioFuzzTokGen(mgr);
 		this.validator = new BioFuzzValidator(mgr);
 		this.modifier = new BioFuzzModifier(mgr);

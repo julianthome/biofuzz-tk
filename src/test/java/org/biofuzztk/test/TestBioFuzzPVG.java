@@ -25,6 +25,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.biofuzztk.components.BioFuzzMgr;
+import org.biofuzztk.components.tokenizer.BioFuzzSQLTokenizer;
 import org.biofuzztk.ptree.BioFuzzParseTree;
 
 import org.junit.BeforeClass;
@@ -45,7 +46,7 @@ public class TestBioFuzzPVG {
 	
 	@BeforeClass
 	public static void testParser() {
-		mgr = new BioFuzzMgr("src/main/resources/cfg.xml");
+		mgr = new BioFuzzMgr("src/main/resources/cfg.xml",new BioFuzzSQLTokenizer());
 		assert(mgr != null);
 		
 		logger.debug(">> Tree creation");

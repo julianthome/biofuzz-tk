@@ -29,6 +29,7 @@ import org.slf4j.LoggerFactory;
 import org.biofuzztk.cfg.BioFuzzAttackCfg;
 import org.biofuzztk.cfg.BioFuzzAttackCfgMgr;
 import org.biofuzztk.components.BioFuzzMgr;
+import org.biofuzztk.components.tokenizer.BioFuzzSQLTokenizer;
 import org.biofuzztk.ptree.BioFuzzParseTree;
 
 
@@ -39,7 +40,7 @@ public class TestBioFuzzParser {
 	static List<BioFuzzParseTree> tLst0 = null;
 	@Test
 	public void test() {
-		mgr = new BioFuzzMgr("src/main/resources/cfg.xml");
+		mgr = new BioFuzzMgr("src/main/resources/cfg.xml",new BioFuzzSQLTokenizer());
 		assert(mgr != null);
 		
 		BioFuzzAttackCfgMgr m = mgr.getAtackCfgMgr();

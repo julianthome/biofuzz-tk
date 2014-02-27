@@ -25,6 +25,8 @@ import java.util.Vector;
 
 import org.biofuzztk.ptree.BioFuzzParseTree;
 
+import ch.qos.logback.classic.Logger;
+
 public class BioFuzzStackMgr {
 	
 	private List<BioFuzzTupleStack> stackLst;

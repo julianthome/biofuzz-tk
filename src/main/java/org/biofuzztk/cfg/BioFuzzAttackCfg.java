@@ -31,7 +31,15 @@ import org.slf4j.LoggerFactory;
 
 import org.biofuzztk.cfg.BioFuzzAttackTag.TagType;
 
-
+/**
+ * 
+ * This is a class that resembles one single production rule of a context-free 
+ * grammar as a graph (CFG-graph). The implementation uses the simplest possible 
+ * representation of a graph, i.e. an adjacency list.
+ * 
+ * @author julian
+ *
+ */
 public class BioFuzzAttackCfg {
 	
 	final static Logger logger = LoggerFactory.getLogger(BioFuzzAttackCfg.class);
@@ -44,11 +52,22 @@ public class BioFuzzAttackCfg {
 		this.matCoord = new HashMap<Number,List<Number>>();
 	}
 
+	/**
+	 * 
+	 * @param matDesc a vector of nodes of the graph.
+	 */
 	public void setMatDesc(Vector<BioFuzzAttackTag> matDesc) {
 		this.matDesc = matDesc;
 	}
 
-	
+	/**
+	 * 
+	 * Adds a new pair of node and its successor to the adjacency
+	 * list.
+	 * 
+	 * @param a a node in the CFG-graph (node A)
+	 * @param b a node in the CFG-graph (node A's successor)
+	 */
 	public void addPoint(int a, int b) {
 		
 		if (!this.matCoord.containsKey(a)){
@@ -65,20 +84,48 @@ public class BioFuzzAttackCfg {
 		
 	}
 	
+	/**
+	 * 
+	 * Returns a list of successors for a given node.
+	 * 
+	 * @param idx identifies a node (node A).
+	 * @return a list of indices that identify all successors from node A. 
+	 */
 	public List<Number> getChoicesByIdx(int idx) {
 		assert(this.matCoord != null);
 		//logger.debug("get idx " + idx);
 		return this.matCoord.get(idx);
 	}
 	
+	/**
+	 * 
+	 * Returns the number of nodes.
+	 * 
+	 * @return the number of nodes of the CFG-graph.
+	 */
 	public int getDescNrs() {
 		return this.matDesc.size();
 	}
 	
+	/**
+	 * 
+	 * Adds a node to the CFG-graph. 
+	 * 
+	 * @param atag a node of the CFG-graph.
+	 * 
+	 */
 	public void addAtag(BioFuzzAttackTag atag) {
 		this.matDesc.add(atag);
 	}
 	
+	/**
+	 * 
+	 * Extends the CFG-graph after creation. This is useful if
+	 * you want to modify production rules that are already present.
+	 * 
+	 * @param atag a node of the CFG-graph.
+	 * 
+	 */
 	public void appendAtag(BioFuzzAttackTag atag) {
 		assert(this.matDesc.size() > 0);
 		
@@ -117,6 +164,13 @@ public class BioFuzzAttackCfg {
 		addPoint(coord,coord+1);
 	}
 	
+	/**
+	 * 
+	 * Translates a node index to the 'real' node.
+	 * 
+	 * @param descIdx
+	 * @return a node of the CFG-graph.
+	 */
 	public BioFuzzAttackTag getAtagByIdx(int descIdx) {
 		if ( descIdx >= 0 && this.matDesc.size() > descIdx ) {
 			return this.matDesc.get(descIdx);

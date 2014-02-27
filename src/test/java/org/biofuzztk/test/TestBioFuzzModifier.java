@@ -29,6 +29,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import org.biofuzztk.components.BioFuzzMgr;
+import org.biofuzztk.components.tokenizer.BioFuzzSQLTokenizer;
 import org.biofuzztk.ptree.BioFuzzParseTree;
 import org.biofuzztk.utils.BioFuzzUtils;
 
@@ -46,7 +47,7 @@ public class TestBioFuzzModifier {
 	
 	@BeforeClass
 	public static void testParser() {
-		mgr = new BioFuzzMgr("src/main/resources/cfg.xml");
+		mgr = new BioFuzzMgr("src/main/resources/cfg.xml", new BioFuzzSQLTokenizer());
 		assert(mgr != null);
 		
 		logger.debug(">> Tree 0 creation");

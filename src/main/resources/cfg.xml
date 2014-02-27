@@ -1,6 +1,15 @@
 <attackcfg>
 
         <rule>
+	        <key label="S"/>	
+	        <val>
+	        	<start/>
+	        		<var label="stmt"/>
+	        	<stop/>
+	        </val>
+        </rule>
+
+        <rule>
 	        <key label="stmt"/>	
 	        <val>
 	        	<start/>
@@ -8,7 +17,7 @@
 						<var label="insrt_stmt"/>
 						<var label="sel_stmt"/>
 						<var label="updt_stmt"/>
-						<var label="updt_stmt"/>
+						<var label="del_stmt"/>
 					</oneof>
 					<zorone>
 						<grp>

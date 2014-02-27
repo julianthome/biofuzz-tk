@@ -30,6 +30,8 @@ import org.biofuzztk.cfg.BioFuzzAttackCfg;
 import org.biofuzztk.cfg.BioFuzzAttackCfgMgr;
 import org.biofuzztk.cfg.BioFuzzAttackTag;
 import org.biofuzztk.cfg.BioFuzzAttackTag.TagType;
+import org.biofuzztk.components.tokenizer.BioFuzzSQLTokenizer;
+import org.biofuzztk.components.tokenizer.BioFuzzTokenizer;
 import org.biofuzztk.ptree.BioFuzzParseTree;
 import org.biofuzztk.ptree.BioFuzzTokLst;
 import org.biofuzztk.utils.BioFuzzUtils;
@@ -47,7 +49,7 @@ public class BioFuzzParser {
 	
 	BioFuzzParserConfig config = null;
 	
-	public BioFuzzParser(BioFuzzAttackCfgMgr mgr, BioFuzzParserConfig config) {
+/**	public BioFuzzParser(BioFuzzAttackCfgMgr mgr, BioFuzzParserConfig config) {
 		this.mgr = mgr;
 		this.config = config;
 		
@@ -55,7 +57,21 @@ public class BioFuzzParser {
 		this.minQual = config.getMinQual();
 		this.maxSSize = config.getMaxSsize();
 		this.maxIter = config.getMaxIter();
-		this.tokenizer = new BioFuzzTokenizer();
+		this.tokenizer = new BioFuzzSQLTokenizer();
+		
+		logger.debug("Parser Config :" + this.config.toString());
+		//logger.debug(this.mgr.toString());	
+	}
+**/
+	public BioFuzzParser(BioFuzzAttackCfgMgr mgr, BioFuzzParserConfig config, BioFuzzTokenizer tokenizer) {
+		this.mgr = mgr;
+		this.config = config;
+		
+		
+		this.minQual = config.getMinQual();
+		this.maxSSize = config.getMaxSsize();
+		this.maxIter = config.getMaxIter();
+		this.tokenizer = tokenizer;
 		
 		logger.debug("Parser Config :" + this.config.toString());
 		//logger.debug(this.mgr.toString());	
@@ -82,17 +98,29 @@ public class BioFuzzParser {
 		BioFuzzStackMgr smgr = null;
 		smgr = new BioFuzzStackMgr();
 		// Iterate over all configurations
-		for ( String key: this.mgr.getKeys()) {
+		
+		//for ( String key: this.mgr.getKeys()) {
 			//logger.debug("buildTrees - Check Rule: " + key);
 			
-			BioFuzzAttackCfg cfg = this.mgr.getAttackCfgByKey(key);
+		//	BioFuzzAttackCfg cfg = this.mgr.getAttackCfgByKey(key);
 			
-			BioFuzzTupleStack tstack = smgr.createAndGetStack(key, 0);
+		//	BioFuzzTupleStack tstack = smgr.createAndGetStack(key, 0);
 			
-			tstack.pushTuple(cfg, TagType.ROOT, 0);
+		//	tstack.pushTuple(cfg, TagType.ROOT, 0);
 			
 
-		}
+		//}
+		
+		// Intead of iterating over all configuration - just look at the start symbol.
+		// That speeds up the parsing process
+		
+		assert(this.mgr.getKeys().contains("S"));
+		BioFuzzAttackCfg cfg = this.mgr.getAttackCfgByKey("S");
+		BioFuzzTupleStack tstack = smgr.createAndGetStack("S", 0);
+		tstack.pushTuple(cfg, TagType.ROOT, 0);
+		
+		
+		
 		BioFuzzTokLst btokLst = new BioFuzzTokLst(tokLst);
 		
 		traversePaths(smgr, btokLst);
@@ -129,10 +157,8 @@ public class BioFuzzParser {
 				BioFuzzTupleStack tstack = smgr.getTupleStack(i);
 				assert(tstack != null);
 				
-				
-				
-
 				if(tstack.getCur() <= tokLst.getSize() - 2) {
+					//logger.debug("match");
 					ret = match(tokLst, smgr, tstack);
 				} else if (tstack.getStatus() == BioFuzzParsingStatus.IN_PROGRESS) {
 					tstack.changeStatus(BioFuzzParsingStatus.FINISHED);
@@ -156,9 +182,11 @@ public class BioFuzzParser {
 						tstack.changeStatus(BioFuzzParsingStatus.INVALID);
 					}
 				}
-				//logger.debug("next");
+
 				
 			}
+			
+			//logger.debug(smgr.toString());
 			
 			// reduce the search space
 			smgr.reduce();
@@ -176,9 +204,11 @@ public class BioFuzzParser {
 //			if (iter == 32)
 //				break;
 			//logger.debug("END========================================================");
+			
+			//logger.debug("reduce");
 
 		}
-		//logger.debug("show" );
+		logger.debug("show" );
 		//logger.debug(smgr.toString());
 		//logger.debug("size: " + smgr.getSize());
 		
@@ -234,6 +264,19 @@ public class BioFuzzParser {
 			
 				case NON_TERMINAL: {
 					BioFuzzAttackCfg ntCfg = this.mgr.getAttackCfgByKey(atag.getName());
+					
+					
+					// this block avoid loops - it avoids that the same non-terminal is
+					// being added to the stack over and over again
+					if(tstack != null && tstack.getSize() > 2) {
+						BioFuzzParsingTuple lastTup = tstack.getTuple(tstack.getSize()-2);
+						if(tstack.getTuple(tstack.getSize()-1).getLfr() == 0 
+								&& lastTup.getLfr() == choice &&
+								lastTup.getCfg() == ntCfg) {
+							//logger.debug("loop detected");
+							continue;
+						}
+					}
 					
 					assert(ntCfg != null);
 					myTstack = forkTupleStack(smgr, tstack, true);
