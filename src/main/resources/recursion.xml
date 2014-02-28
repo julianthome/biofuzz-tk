@@ -1,0 +1,13 @@
+<attackcfg>
+
+        <rule>
+	        <key label="S"/>	
+	        <val>
+	        	<start/>
+	        		<const label="a"/>
+		        	<var label="S"/>
+	        	<stop/>
+	        </val>
+        </rule>
+        
+</attackcfg>

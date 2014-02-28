@@ -1,0 +1,1 @@
+- Rewrite parsing rules after detecting left recursion.

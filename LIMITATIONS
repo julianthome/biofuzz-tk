@@ -1,0 +1,4 @@
+- the biofuzz parser is not yet capable of dealing with left recursion.
+	S -> Sa (not possible)
+	S -> aS (possible)
+	S -> a{a} (possible anyway)
