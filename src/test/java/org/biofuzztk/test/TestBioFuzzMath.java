@@ -21,6 +21,7 @@ public class TestBioFuzzMath {
 	final static Logger logger = LoggerFactory.getLogger(TestBioFuzzModifier.class);
 
 	static List<BioFuzzParseTree> tLst0 = null;
+	static List<BioFuzzParseTree> tLst1 = null;
 	
 	@BeforeClass
 	public static void testParser() {
@@ -55,6 +56,13 @@ public class TestBioFuzzMath {
 		logger.debug(">> Tree 0 creation");
 		
 		tLst0 = mgr.buildTrees("1+4*(5+2)/10-4");
+		
+		BioFuzzParseTree t = mgr.getNewParseTree();
+		while(!t.getVal()) {
+			mgr.extend(t);
+		}
+		logger.debug("new tree: " + t.toString());
+		
 		
 		logger.debug(">> check");
 		assert(tLst0 != null);

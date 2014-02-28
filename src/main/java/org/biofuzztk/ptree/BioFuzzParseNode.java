@@ -150,7 +150,7 @@ public class BioFuzzParseNode {
 	}
 	
 	public Boolean isRoot() {
-		return (this.atag == null);
+		return (this.atag.getTagType() == TagType.ROOT);
 	}
 
 	public void setParent(BioFuzzParseNode parent) {

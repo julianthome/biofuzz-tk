@@ -26,17 +26,21 @@ import java.util.Vector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import org.biofuzztk.cfg.BioFuzzAttackCfg;
 import org.biofuzztk.cfg.BioFuzzAttackCfgMgr;
 import org.biofuzztk.cfg.BioFuzzConfigReader;
+import org.biofuzztk.cfg.BioFuzzAttackTag.TagType;
 import org.biofuzztk.components.BioFuzzTracer.BioFuzzQuery;
 import org.biofuzztk.components.BioFuzzTracer.TraceType;
 import org.biofuzztk.components.modifier.BioFuzzModifier;
 import org.biofuzztk.components.parser.BioFuzzParser;
 import org.biofuzztk.components.parser.BioFuzzParserConfig;
 import org.biofuzztk.components.parser.BioFuzzParsingStatus;
+import org.biofuzztk.components.parser.BioFuzzTupleStack;
 import org.biofuzztk.components.tokenizer.BioFuzzTokenizer;
 import org.biofuzztk.ptree.BioFuzzParseNode;
 import org.biofuzztk.ptree.BioFuzzParseTree;
+import org.biofuzztk.ptree.BioFuzzTokLst;
 
 /**
  * 
@@ -67,7 +71,7 @@ public class BioFuzzMgr {
 		assert(this.mgr != null);
 		assert(tokenizer != null);
 		
-		this.config = new BioFuzzParserConfig(150, BioFuzzParsingStatus.FINISHED, 400);
+		this.config = new BioFuzzParserConfig(20, BioFuzzParsingStatus.FINISHED, 400);
 		
 		this.parser = new BioFuzzParser(mgr,this.config, tokenizer);
 		this.generator = new BioFuzzTokGen(mgr);
@@ -85,6 +89,20 @@ public class BioFuzzMgr {
 	
 	public BioFuzzAttackCfgMgr getAtackCfgMgr() {
 		return this.mgr;
+	}
+	
+	public BioFuzzParseTree getNewParseTree() {
+		
+		BioFuzzAttackCfg cfg = this.mgr.getAttackCfgByKey("S");
+		BioFuzzParseTree tree = new BioFuzzParseTree();
+		BioFuzzTokLst tLst = new BioFuzzTokLst();
+		tree.setTokLst(tLst);
+		BioFuzzParseNode ptr = tree.getRootNode();
+		
+		ptr.setCfg(cfg);
+		ptr.setAtagName("S");
+		
+		return tree;
 	}
 	
 	/**

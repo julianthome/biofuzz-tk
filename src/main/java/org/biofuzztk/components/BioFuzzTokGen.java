@@ -115,7 +115,7 @@ public class BioFuzzTokGen {
 	 */
 	private void getExtPtVal(BioFuzzParseNode node) {
 		logger.debug("val");
-		if(node == null || node.hasChildren() == false)
+		if(node == null)
 			return;
 
 		List<Number> nxtChoices = node.getChoices();
@@ -123,13 +123,20 @@ public class BioFuzzTokGen {
 		
 		logger.debug(" -- choices are " + nxtChoices + " for node " + node.getAtagName());
 		logger.debug("--- desc idx: " + node.getDescIdx());
+		logger.debug("--- choices size: " + nxtChoices.size());
+		
 		if(nxtChoices.size() > 1) {
 			if(node.hasParent())
 				this.exPnts.add(node.getParent());
 		}
+		
+		if(node.isRoot() && !node.hasChildren()) {
+			logger.debug("root");
+			this.exPnts.add(node);
+		}
 
-
-		getExtPtVal(node.getRoc());
+		if(node.hasChildren() == true)
+			getExtPtVal(node.getRoc());
 
 	}
 

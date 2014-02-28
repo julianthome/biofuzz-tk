@@ -58,6 +58,18 @@ public class BioFuzzTokLst {
 		this.del = " ";
 	}
 	
+	public BioFuzzTokLst() {
+		this.cursor = 0;
+		this.tokLst = new ArrayList<String>();
+		this.tokLst.add("$");
+		normalize(this.tokLst);
+		this.lfr = new Stack<Number>();
+		this.cstack = new Stack<Number>();
+		this.ack = new Stack<Number>();
+		this.checkpoints = new HashSet<Integer>();
+		this.del = " ";
+	}
+	
 	public BioFuzzTokLst(BioFuzzTokLst t) {
 		this.cursor = t.cursor;
 		this.lfr = new Stack<Number>();

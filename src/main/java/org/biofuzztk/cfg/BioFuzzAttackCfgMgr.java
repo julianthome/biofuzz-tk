@@ -95,7 +95,6 @@ public class BioFuzzAttackCfgMgr {
 		this.cfgMap = cfgMap;
 	}
 
-
 	@Override
 	public String toString() {
 		
