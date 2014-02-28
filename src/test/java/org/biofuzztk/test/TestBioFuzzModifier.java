@@ -31,7 +31,7 @@ import org.slf4j.LoggerFactory;
 import org.biofuzztk.components.BioFuzzMgr;
 import org.biofuzztk.components.tokenizer.BioFuzzSQLTokenizer;
 import org.biofuzztk.ptree.BioFuzzParseTree;
-import org.biofuzztk.utils.BioFuzzUtils;
+
 
 public class TestBioFuzzModifier {
 
@@ -204,6 +204,7 @@ public class TestBioFuzzModifier {
 		logger.debug("Mutation: " + b + "for treeA");
 		Boolean c = mgr.mutate(treeC);
 		logger.debug("Mutation: " + c + "for treeA");
+
 		Boolean d = mgr.mutate(treeD);
 		logger.debug("Mutation: " + c + "for treeA");
 		
@@ -215,17 +216,7 @@ public class TestBioFuzzModifier {
 		logger.debug("sC1: " + sC1);
 		String sD1 = treeD.getTokLst().getStrFromTokens();
 		logger.debug("sD1: " + sD1);
-		
-		if (a)
-			assert(BioFuzzUtils.getStrDist(sA0, sA1) > 0);
-		if (b)
-			assert(BioFuzzUtils.getStrDist(sB0, sB1) > 0);
-		if (c)
-			assert(BioFuzzUtils.getStrDist(sC0, sC1) > 0);
-		if (d)
-			assert(BioFuzzUtils.getStrDist(sD0, sD1) > 0);
-		
-		
+
 		
 		logger.debug(">> Test Mutation END");
 		

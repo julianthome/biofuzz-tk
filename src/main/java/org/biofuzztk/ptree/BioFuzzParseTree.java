@@ -59,6 +59,7 @@ public class BioFuzzParseTree {
 	private int pfxBarrier;
 
 	private BioFuzzParseNode lnt;
+	@SuppressWarnings("unused")
 	private BioFuzzParseNode lt;
 
 	public BioFuzzParseTree(String [] tokLst) {

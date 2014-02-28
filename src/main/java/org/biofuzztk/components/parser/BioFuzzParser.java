@@ -33,7 +33,6 @@ import org.biofuzztk.cfg.BioFuzzAttackTag.TagType;
 import org.biofuzztk.components.tokenizer.BioFuzzTokenizer;
 import org.biofuzztk.ptree.BioFuzzParseTree;
 import org.biofuzztk.ptree.BioFuzzTokLst;
-import org.biofuzztk.utils.BioFuzzUtils;
 
 /**
  * 
@@ -284,6 +283,7 @@ public class BioFuzzParser {
 	 * @return the number of matches.
 	 * 
 	 */
+	@SuppressWarnings("incomplete-switch")
 	private int match(BioFuzzTokLst tokLst, BioFuzzStackMgr smgr, BioFuzzTupleStack tstack) {
 		
 		int matchCnt = 0;
