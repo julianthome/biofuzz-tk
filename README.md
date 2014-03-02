@@ -1,6 +1,6 @@
 # biofuzz-tk
 
-{:toc}
+[TOC]
 
 ## What is biofuzz-tk
 
