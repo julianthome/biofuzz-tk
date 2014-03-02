@@ -1,6 +1,7 @@
 # biofuzz-tk
 
-[Easy string parsing](###Example-1:-Easy-string-parsing)
+[Easy string parsing](#example-1-easy-string-parsing)
+[Dealing with mathematical expressions (Parsing+Generation)](example-2-mathematical-expressions)
 
 ## What is biofuzz-tk
 
@@ -102,7 +103,7 @@ The BioFuzz Manager will now tokenize the string, parse it and return al list of
 
 	TokLstStr: a a a a a
 
-### Example 1: Mathematical Expressions
+### Example 2: Mathematical Expressions
 
 #### Parsing
 A CFG configuration for mathematical expressions might look as follows.
