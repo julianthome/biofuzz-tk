@@ -32,6 +32,17 @@ You can define a CFG configuration *cfg.xml* for biofuzz-tk that looks as follow
 </attackcfg>
 ```
 
+The whole configuration is embedded in the *attackcfg*-tag. This tag contains one or more *rule*-tags. A *rule*-tag represents a production rule. The *key*-tag defines the name of the non-terminal *S* (left-hand side of a production rule) which is expected to be present, since it is the starting-symbol. The *val*-tag contains the actual production rule definition. The meta-tags *start* and *stop* are used to indicate the starting/stopping terminals/non-terminals. The *const*-tag is used to define terminals whereas the *var*-tag references non-terminal definitions. When you are writing your own configuration file, please make sure, that all the non-terminals that are references do have their own rule-definition. The biofuzz-tk definition is EBNF-alike, so we have plenty of different XML-tags that can be used:
+
+
+| biofuzz-tk        | meaning | 
+| ------------- |:-------------:| 
+|   oneof    |  alternative |
+|  zormore     |  optional repeat |
+|  zorone    |   optional |
+|  group |  grouping  |
+
+
 The BioFuzz Manager is the object that manages everything operation that can be executed on a parse-tree including the parse-tree generation itself. To read in the configuration you habe to create a Manager object and pass the path to the configuration file as a paramter. Besides that you have to implement a tokenizer as well and pass it to the manager. Before the parsing takes place, a string has to be split it tokens. The interface-method *tokenize* from the interface *BioFuzzTokenizer* should return an array of tokens. An appropriate tokenizer implementation might looks as follows:
 
 ``` java
@@ -87,6 +98,8 @@ The BioFuzz Manager will now tokenize the string, parse it and return al list of
 	Length: 6
 
 	TokLstStr: a a a a a
+
+### Example 1: Mathematical Expressions
 
 
 
