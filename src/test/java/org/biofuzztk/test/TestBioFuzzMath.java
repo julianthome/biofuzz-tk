@@ -56,6 +56,7 @@ public class TestBioFuzzMath {
 		logger.debug(">> Tree 0 creation");
 		
 		tLst0 = mgr.buildTrees("1+4*(5+2)/10-4");
+		mgr.validate(tLst0.get(0));
 		
 		BioFuzzParseTree t = mgr.getNewParseTree();
 		while(!t.getVal()) {
