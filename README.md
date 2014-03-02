@@ -1,5 +1,7 @@
 # biofuzz-tk
 
+{:toc}
+
 ## What is biofuzz-tk
 
 BioFuzz Toolkit helps you to parse strings and to perform operations (modification/extension) on the resulting parse trees. It is suited to programs that leverage genetic programming (GP) or similar techniques. The parsing and token-generation happens based on a context-free grammar description. Further, it supports the two well-known GP operations: Mutation and Crossover.
@@ -41,6 +43,7 @@ The whole configuration is embedded in the *attackcfg*-tag. This tag contains on
 |  zormore     |  optional repeat |
 |  zorone    |   optional |
 |  group |  grouping  |
+|  regexp |  to match regular expressions that are defined via the label-attribute.  |
 
 
 The BioFuzz Manager is the object that manages every operation that can be executed on a parse-tree including the parse-tree generation itself. To read in the configuration you habe to create a Manager object and pass the path to the configuration file as a paramter. Besides that you have to implement a tokenizer as well and pass it to the manager. Before the parsing takes place, a string has to be split it tokens. The interface-method *tokenize* from the interface *BioFuzzTokenizer* should return an array of tokens. An appropriate tokenizer implementation might looks as follows:
@@ -246,4 +249,8 @@ The resulting parse-tree looks as follows.
 		Length: 14
 
 		TokLstStr: 1 + 4 * ( 5 + 2 ) / 10 - 4
+
+#### String generation
+
+t.b.c
 
