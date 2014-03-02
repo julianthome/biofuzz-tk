@@ -8,12 +8,12 @@ BioFuzz Toolkit helps you to parse strings and to perform operations (modificati
 
 biofuzz-tk works in two steps: first you have to tokenize your string and then you have to parse it. Both, the tokenizing and parsing are configurable.
 
-### Example: Easy string parsing
+### Example 1: Easy string parsing
 
-Suppose you want to parse the string **aaaaa** matches the grammar definition
+Suppose you want to parse the string **aaaaaa** matches the grammar definition
 	S ->  a {S}
 
-You can define a CFG configuration for biofuzz-tk that looks as follows:
+You can define a CFG configuration *cfg.xml* for biofuzz-tk that looks as follows:
 
 ```
 <attackcfg>
@@ -32,9 +32,9 @@ You can define a CFG configuration for biofuzz-tk that looks as follows:
 </attackcfg>
 ```
 
-The BioFuzz Manager is the object that manages everything operation that can be executed on a parse-tree including the parse-tree generation itself. To read in the configuration you habe to create a Manager object and pass the path to the configuration file as a paramter. Besides that you have to implement a tokenizer as well and pass it to the manager. Before the parsing takes place, a string has to be split it tokens. The interface-method    tokenize from the interface    BioFuzzTokenizer should return an array of tokens. An appropriate tokenizer implementation might looks as follows:
+The BioFuzz Manager is the object that manages everything operation that can be executed on a parse-tree including the parse-tree generation itself. To read in the configuration you habe to create a Manager object and pass the path to the configuration file as a paramter. Besides that you have to implement a tokenizer as well and pass it to the manager. Before the parsing takes place, a string has to be split it tokens. The interface-method *tokenize* from the interface *BioFuzzTokenizer* should return an array of tokens. An appropriate tokenizer implementation might looks as follows:
 
-```
+``` java
 BioFuzzTokenizer tokenizer = new BioFuzzTokenizer() {
 	@Override
 	public String[] tokenize(String s) {
@@ -44,7 +44,49 @@ BioFuzzTokenizer tokenizer = new BioFuzzTokenizer() {
 };
 ```
 
+The next important step is the creation of a BioFuzz Manager object itself by typing:
 
+
+``` java
+BioFuzzMgr mgr = new BioFuzzMgr("cfg.xml", tokenizer); ;
+```
+
+If you want to parse the string **aaaaaa**, you can use the following instruction:
+
+``` java
+List<BioFuzzParseTree> tLst = mgr.buildTrees("aaaaaa");
+BioFuzzParseTree tree = tLst.get(0);
+mgr.validate(tree);
+```
+
+The BioFuzz Manager will now tokenize the string, parse it and return al list of parse-trees, i.e. all parse-trees that resemble all possible paths through the CFG that can be taken in order to generate the string *aaaaaa*. The second line just shows how to access the first parse-tree of the list. The third line shows the validation method that is incorporated in the manger. It just traverses the tree and checks whether it is complete according to the CFG or not. This information is important for the tokenizer which we will discuss later. The resulting parse tree might look as follows (*toString()* method is implemented).
+
+	* [ ROOT(S): validity:(true)]
+	|--(tok_idx: 0 descIdx: 1 id:1)[AttackTag: a(TERMINAL val:-5)(true)]
+	 |--(tok_idx: 0 descIdx: 1 id:1)[Tok: a(TERMINAL val:-5)(true)]
+	|--(tok_idx: 1 descIdx: 2 id:2)[AttackTag: S(NON_TERMINAL val:-4)(true)]
+	 |--(tok_idx: 1 descIdx: 1 id:3)[AttackTag: a(TERMINAL val:-5)(true)]
+	  |--(tok_idx: 1 descIdx: 1 id:3)[Tok: a(TERMINAL val:-5)(true)]
+	 |--(tok_idx: 2 descIdx: 2 id:4)[AttackTag: S(NON_TERMINAL val:-4)(true)]
+	  |--(tok_idx: 2 descIdx: 1 id:5)[AttackTag: a(TERMINAL val:-5)(true)]
+	   |--(tok_idx: 2 descIdx: 1 id:5)[Tok: a(TERMINAL val:-5)(true)]
+	  |--(tok_idx: 3 descIdx: 2 id:6)[AttackTag: S(NON_TERMINAL val:-4)(true)]
+	   |--(tok_idx: 3 descIdx: 1 id:7)[AttackTag: a(TERMINAL val:-5)(true)]
+	    |--(tok_idx: 3 descIdx: 1 id:7)[Tok: a(TERMINAL val:-5)(true)]
+	   |--(tok_idx: 4 descIdx: 2 id:8)[AttackTag: S(NON_TERMINAL val:-4)(true)]
+	    |--(tok_idx: 4 descIdx: 1 id:9)[AttackTag: a(TERMINAL val:-5)(true)]
+	     |--(tok_idx: 4 descIdx: 1 id:9)[Tok: a(TERMINAL val:-5)(true)]
+
+	#Nodes: 10
+	#NTs: 1
+	NTs: [S]
+	NTUbound: [S]
+	Last NT: (tok_idx: 4 descIdx: 2 id:8)
+	TokLst: [a][a][a][a][a]<a>
+	Checkpoints: []
+	Length: 6
+
+	TokLstStr: a a a a a
 
 
 
