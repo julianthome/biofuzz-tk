@@ -20,7 +20,7 @@ public class TestBioFuzzRecursion {
 	private static BioFuzzMgr mgr;
 	final static Logger logger = LoggerFactory.getLogger(TestBioFuzzModifier.class);
 
-	static List<BioFuzzParseTree> tLst0 = null;
+	static List<BioFuzzParseTree> tLst = null;
 	
 	@BeforeClass
 	public static void testParser() {
@@ -42,15 +42,19 @@ public class TestBioFuzzRecursion {
 	}
 	
 	@Test
-	public void testCrossOver() {
+	public void test() {
 
-		logger.debug(">> Tree 0 creation");
+		logger.debug(">> Create a tree");
 		
-		tLst0 = mgr.buildTrees("aaaaaa");
+		tLst = mgr.buildTrees("aaaaaa");
+		assert(tLst != null);
+		logger.debug(">> Tree successfully build");
 		
-		logger.debug(">> check");
-		assert(tLst0 != null);
-		logger.debug("List length: " + tLst0.get(0).toString());
+		logger.debug(">> get tree");
+		BioFuzzParseTree tree = tLst.get(0);
+		
+		mgr.validate(tree);
+		logger.debug("List length: " + tree.toString());
 			
 	}
 

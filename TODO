@@ -1,2 +1,3 @@
 - Rewrite parsing rules after detecting left recursion.
 - Use graphviz to create nice plots of the parse-trees.
+- Multi-core support.

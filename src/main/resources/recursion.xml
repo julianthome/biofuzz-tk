@@ -5,8 +5,11 @@
 	        <val>
 	        	<start/>
 	        		<const label="a"/>
-		        	<var label="S"/>
-	        	<stop/>
+	        		<oneof>
+			        	<var label="S"/>
+						<stop/>
+		        	</oneof>
+		        <stop/>
 	        </val>
         </rule>
         
