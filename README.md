@@ -1,6 +1,6 @@
 # biofuzz-tk
 
-[Easy string parsing](### Example 1: Easy string parsing)
+[Easy string parsing](###Example-1:-Easy-string-parsing)
 
 ## What is biofuzz-tk
 
