@@ -289,7 +289,7 @@ mgr.validate(tLst0.get(0));
 mgr.extend(tLst0.get(0));
 ```
 
-The Java code above might yield the new expression *1 + 4 * ( 5 + 2 ) / 10 - 4 + 6*. The extend function generates a single new terminal (and non-terminals associated with that particular termina) for each call. The BioFuzz toolkit scans the parse-tree for so called extension points. An extension point is a non-terminal where new terminal child nodes can be appended to. Another feature that you can see in the code above is partial parsing. The BioFuzz  toolkit has the capability of parsing strings that yield incomplete parse trees. These parse trees can be extended with the string extension capabilities.
+The Java code above might yield the new expression ``1 + 4 * ( 5 + 2 ) / 10 - 4 + 6``. The extend function generates a single new terminal (and non-terminals associated with that particular termina) for each call. The BioFuzz toolkit scans the parse-tree for so called extension points. An extension point is a non-terminal where new terminal child nodes can be appended to. Another feature that you can see in the code above is partial parsing. The BioFuzz  toolkit has the capability of parsing strings that yield incomplete parse trees. These parse trees can be extended with the string extension capabilities.
 
 #### Crossover
 
@@ -385,7 +385,7 @@ lmut.add(mut);
 BioFuzzManager mgr = new BioFuzzMgr("src/main/resources/math.xml", tokenizer, mut);
 ```
 
-This is due to the fact that users normally define multiple mutators. The toolkit automatically determines which mutators are applicable for a given token by looking at the constraint that is given by the *matches* function of the BioFuzzMutator interface, and randomly picks one of them. The following code will parse a mathematical expression, validate the resulting parse-tree, and mutate a token that is picked randomly from the range with the lower bound *0* (inclusively) and tree.getTokLstLen()-2 as the upper bound (inclusively). 
+This is due to the fact that users normally define multiple mutators. The toolkit automatically determines which mutators are applicable for a given token by looking at the constraint that is given by the *matches* function of the BioFuzzMutator interface, and randomly picks one of them. The following code will parse a mathematical expression, validate the resulting parse-tree, and mutate a token that is picked randomly from the range with the lower bound *0* (inclusively) and tree.getTokLstLen()-2 (which is the index of the last added terminal node) as the upper bound (inclusively). 
 
 
 ``` java
@@ -395,6 +395,6 @@ mgr.validate(tree);
 mgr.mutate(tree,0,tree.getTokLstLen()-2);
 ```
 
-Given the BioFuzzMutator implementation above, the expression *1+4*(5+2)/10-4* might be mutated into *6+4*(5+2)/10-4*
+Given the BioFuzzMutator implementation above, the expression ``1+4*(5+2)/10-4`` might be mutated into ``6+4*(5+2)/10-4``
 
 
