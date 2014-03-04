@@ -1,11 +1,18 @@
 # biofuzz-tk
 
-[Introductory Example](#example-1-easy-string-parsing)
-[String Parsing](#example-2-mathematical-expressions)
-[Generation](#example-2-mathematical-expressions)
-[Extension](#example-2-mathematical-expressions)
-[Crossover](#example-2-mathematical-expressions)
-[Mutation](#example-2-mathematical-expressions)
+Jump to ...
+
+[Introductory Example](#introductory-example)
+
+[String Parsing](#parsing)
+
+[Generation](#string-generation)
+
+[Extension](#string-extension)
+
+[Crossover](#crossover)
+
+[Mutation](#mutation)
 
 ## What is biofuzz-tk
 
@@ -13,7 +20,7 @@ BioFuzz Toolkit helps you to parse strings and to perform operations (modificati
 
 ## How to use it
 
-biofuzz-tk works in two steps: first you have to tokenize your string and then you have to parse it. Both, the tokenizing and parsing are configurable.
+The following examples give you an intuition how the BioFuzz Toolkit can be used.
 
 ### Introductory Example
 
