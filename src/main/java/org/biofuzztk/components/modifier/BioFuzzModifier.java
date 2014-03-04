@@ -33,9 +33,6 @@ import org.biofuzztk.cfg.BioFuzzAttackTag.TagType;
 import org.biofuzztk.components.BioFuzzTracer;
 import org.biofuzztk.components.BioFuzzTracer.BioFuzzQuery;
 import org.biofuzztk.components.BioFuzzTracer.TraceType;
-import org.biofuzztk.components.modifier.mutators.BioFuzzCaseMutator;
-import org.biofuzztk.components.modifier.mutators.BioFuzzCommentMutator;
-import org.biofuzztk.components.modifier.mutators.BioFuzzQuoteMutator;
 import org.biofuzztk.ptree.BioFuzzParseNode;
 import org.biofuzztk.ptree.BioFuzzParseTree;
 import org.biofuzztk.ptree.BioFuzzTokLst;
@@ -55,8 +52,8 @@ public class BioFuzzModifier {
 	private BioFuzzAttackCfgMgr mgr = null;
 	private BioFuzzTracer tracer = null;
 	
-	private List<BioFuzzMutator> quoteMutator = new Vector<BioFuzzMutator>();
-	private List<BioFuzzMutator> tokMutator = new Vector<BioFuzzMutator>();
+	private List<BioFuzzMutator> mutators = null;
+
 
 	/**
 	 * 
@@ -66,19 +63,28 @@ public class BioFuzzModifier {
 	 * @param mgr the CFG-graph.
 	 * 
 	 */
-	public BioFuzzModifier(BioFuzzAttackCfgMgr mgr) {
+	public BioFuzzModifier(BioFuzzAttackCfgMgr mgr,  List<BioFuzzMutator> mutators) {
 		this.mgr = mgr;
 		this.tracer = new BioFuzzTracer();
 		logger.debug(this.mgr.toString());	
-
-		
-		quoteMutator.add(new BioFuzzQuoteMutator());
-		quoteMutator.add(new BioFuzzCommentMutator());
-		tokMutator.add(new BioFuzzCaseMutator());
-		tokMutator.add(new BioFuzzCommentMutator());
-
-		
+		this.mutators = mutators;
 	}
+	
+	/**
+	 * 
+	 * Constructor. It needs access to the CFG-graph, which is the reason
+	 * why we have to pass it as parameter here. THe list of mutators is empty
+	 * 
+	 * @param mgr the CFG-graph.
+	 * 
+	 */
+	public BioFuzzModifier(BioFuzzAttackCfgMgr mgr) {
+		this.mgr = mgr;
+		this.tracer = new BioFuzzTracer();
+		this.mutators = new Vector<BioFuzzMutator>();
+		logger.debug(this.mgr.toString());	
+	}
+	
 	
 	/**
 	 * 
@@ -353,7 +359,76 @@ public class BioFuzzModifier {
 	
 	/**
 	 * 
-	 * Gets the last added terminal node and mutates it.
+	 * Find applicable mutators.
+	 * 
+	 * @param s the string to which the mutator should be applicable to.
+	 * @return a list of applicable mutators.
+	 * 
+	 */
+	private List<BioFuzzMutator> findMutators(String s) {
+		List<BioFuzzMutator> applicable = new Vector<BioFuzzMutator>();
+		
+		for(BioFuzzMutator mut:this.mutators) {
+			if (mut.matches(s)) {
+				applicable.add(mut);
+			}
+		}
+		
+		return applicable;
+	}
+	
+	/**
+	 * 
+	 * Gets a terminal node and mutates it. One
+	 * can define the range of the token list from which a token index
+	 * is randomly picked. The token associated with this index will
+	 * be mutated.
+	 * 
+	 * @param tree parse tree to apply mutation on.
+	 * @param lrange lower bound of the range.
+	 * @param rrange upper bound of the range.
+	 * @return true if mutation was applied, false otherwise.
+	 * 
+	 */
+	public boolean
+	mutate(BioFuzzParseTree tree, int lrange, int rrange) {
+
+		Random ridx = new Random();
+		BioFuzzTokLst tokLst = tree.getTokLst();
+		
+		assert(tokLst != null);
+		assert(rrange > lrange);
+		assert(rrange >= 0);
+		assert(tokLst.getSize() > 1);
+		
+		int tidx = ridx.nextInt((rrange - lrange) + 1) + lrange;
+		
+		String s = tokLst.get(tidx);
+		String oldS = s;
+		
+		assert(s != null);
+		
+		// Find all applicable mutators
+		List<BioFuzzMutator> applicable = findMutators(s);
+		if(applicable.size() == 0) {
+			logger.debug("No applicable mutators found");
+			return false;
+		}
+		
+
+		int idx = ridx.nextInt(applicable.size());
+		BioFuzzMutator mutator = applicable.get(idx);
+		
+		logger.debug("mutate token " + tidx + ": " + s);
+		mutator.mutate(tokLst, tidx);
+
+		return !oldS.equals(s);
+	}
+	
+	
+	/**
+	 * 
+	 * Gets the last added terminal node and mutates it. 
 	 * 
 	 * @param tree parse tree to apply mutation on.
 	 * @return true if mutation was applied, false otherwise.
@@ -362,10 +437,8 @@ public class BioFuzzModifier {
 	public boolean
 	mutate(BioFuzzParseTree tree) {
 
-		
 		BioFuzzTokLst tokLst = tree.getTokLst();
 		assert(tokLst != null);
-		
 		assert(tokLst.getSize() > 1);
 		
 		String s = tokLst.get(tokLst.getSize()-2);
@@ -373,22 +446,20 @@ public class BioFuzzModifier {
 		
 		assert(s != null);
 		
-		if(s.matches("[\"']") && s.length() == 1) {
-			// call quote mutator or token list mutator
-			Random ridx = new Random();
-			int idx = ridx.nextInt(this.quoteMutator.size());
-			BioFuzzMutator mutator = this.quoteMutator.get(idx);
-			mutator.mutate(tokLst);
-		} else {
-			Random ridx = new Random();
-			int idx = ridx.nextInt(this.tokMutator.size());
-			BioFuzzMutator mutator = this.tokMutator.get(idx);
-			mutator.mutate(tokLst);
+		// Find all applicable mutators
+		List<BioFuzzMutator> applicable = findMutators(s);
+		if(applicable.size() == 0) {
+			logger.debug("No applicable mutators found");
+			return false;
 		}
 		
+		Random ridx = new Random();
+		int idx = ridx.nextInt(applicable.size());
+		BioFuzzMutator mutator = applicable.get(idx);
+		
+		mutator.mutate(tokLst, tokLst.getSize()-2);
 
 		return !oldS.equals(s);
 	}
-	
 	
 }

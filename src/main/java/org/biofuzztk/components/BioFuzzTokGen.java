@@ -126,6 +126,8 @@ public class BioFuzzTokGen {
 		logger.debug("--- choices size: " + nxtChoices.size());
 		
 		if(nxtChoices.size() > 1) {
+			logger.debug(":::::::::::::::::::::::");
+			logger.debug(node.getAtagName());
 			if(node.hasParent())
 				this.exPnts.add(node.getParent());
 		}

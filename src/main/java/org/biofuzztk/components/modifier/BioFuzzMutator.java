@@ -34,11 +34,24 @@ public interface BioFuzzMutator {
 	/**
 	 * 
 	 * The mutation function that takes a token list and applies a
-	 * mutation on it.
+	 * mutation on it. 
 	 * 
 	 * @param lst the token list.
+	 * @param idx the index of the token to mutate.
+	 * 
 	 */
-	public void mutate(BioFuzzTokLst lst);
+	public void mutate(BioFuzzTokLst lst, int idx);
+	
+	
+	/**
+	 * 
+	 * This is a constraint function - mutation is only applied if this
+	 * function returns true.
+	 * 
+	 * @param s the string to match.
+	 * @return true if string s matches the defined constraint.
+	 */
+	public boolean matches(String s);
 	
 	/**
 	 * 

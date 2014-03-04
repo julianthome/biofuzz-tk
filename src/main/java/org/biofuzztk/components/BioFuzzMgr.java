@@ -23,20 +23,20 @@ package org.biofuzztk.components;
 import java.util.List;
 import java.util.Vector;
 
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import org.biofuzztk.cfg.BioFuzzAttackCfg;
 import org.biofuzztk.cfg.BioFuzzAttackCfgMgr;
 import org.biofuzztk.cfg.BioFuzzConfigReader;
-import org.biofuzztk.cfg.BioFuzzAttackTag.TagType;
 import org.biofuzztk.components.BioFuzzTracer.BioFuzzQuery;
 import org.biofuzztk.components.BioFuzzTracer.TraceType;
 import org.biofuzztk.components.modifier.BioFuzzModifier;
+import org.biofuzztk.components.modifier.BioFuzzMutator;
 import org.biofuzztk.components.parser.BioFuzzParser;
 import org.biofuzztk.components.parser.BioFuzzParserConfig;
 import org.biofuzztk.components.parser.BioFuzzParsingStatus;
-import org.biofuzztk.components.parser.BioFuzzTupleStack;
 import org.biofuzztk.components.tokenizer.BioFuzzTokenizer;
 import org.biofuzztk.ptree.BioFuzzParseNode;
 import org.biofuzztk.ptree.BioFuzzParseTree;
@@ -65,6 +65,24 @@ public class BioFuzzMgr {
 	
 	final static Logger logger = LoggerFactory.getLogger(BioFuzzMgr.class);
 	
+	public BioFuzzMgr(String fname, BioFuzzTokenizer tokenizer, List<BioFuzzMutator> mutators) {
+		
+		this.mgr = BioFuzzConfigReader.readConfigFile(fname);
+		assert(this.mgr != null);
+		assert(tokenizer != null);
+		
+		this.config = new BioFuzzParserConfig(20, BioFuzzParsingStatus.FINISHED, 400);
+		
+		this.parser = new BioFuzzParser(mgr,this.config, tokenizer);
+		this.generator = new BioFuzzTokGen(mgr);
+		this.validator = new BioFuzzValidator(mgr);
+		this.modifier = new BioFuzzModifier(mgr,mutators);
+		
+		this.tracer = new BioFuzzTracer();
+		
+		logger.debug(this.mgr.toString());	
+	}
+	
 	public BioFuzzMgr(String fname, BioFuzzTokenizer tokenizer) {
 		
 		this.mgr = BioFuzzConfigReader.readConfigFile(fname);
@@ -76,7 +94,24 @@ public class BioFuzzMgr {
 		this.parser = new BioFuzzParser(mgr,this.config, tokenizer);
 		this.generator = new BioFuzzTokGen(mgr);
 		this.validator = new BioFuzzValidator(mgr);
+		// Simple modifer without any mutators
 		this.modifier = new BioFuzzModifier(mgr);
+		
+		this.tracer = new BioFuzzTracer();
+		
+		logger.debug(this.mgr.toString());	
+	}
+	
+	public BioFuzzMgr(String fname) {
+		
+		this.mgr = BioFuzzConfigReader.readConfigFile(fname);
+		assert(this.mgr != null);
+		
+		this.config = new BioFuzzParserConfig(20, BioFuzzParsingStatus.FINISHED, 400);	
+		this.parser = null;
+		this.generator = new BioFuzzTokGen(mgr);
+		this.validator = new BioFuzzValidator(mgr);
+		this.modifier = null;
 		
 		this.tracer = new BioFuzzTracer();
 		
@@ -115,6 +150,10 @@ public class BioFuzzMgr {
 	 * 
 	 */
 	public List<BioFuzzParseTree> buildTrees( String s ) {
+		if(this.parser == null) {
+			logger.debug("No parser available");
+			return null;
+		}
 		return parser.buildTrees(s);
 	}
 	
@@ -128,6 +167,10 @@ public class BioFuzzMgr {
 	 */
 	public void validate( BioFuzzParseTree tree) {
 		logger.debug("do validate");
+		if(this.validator == null) {
+			logger.debug("No validator available");
+			return;
+		}
 		validator.doValidate(tree);
 	}
 	
@@ -139,6 +182,12 @@ public class BioFuzzMgr {
 	 * 
 	 */
 	public void extend( BioFuzzParseTree tree ) {
+		
+		if(this.generator == null) {
+			logger.debug("No generator available");
+			return;
+		}
+		
 		// proper extension requires validation before and after
 		logger.debug("extend tree");
 		validator.doValidate(tree);
@@ -148,7 +197,7 @@ public class BioFuzzMgr {
 	
 	/**
 	 * 
-	 * Picks a terminal and mutates by picking a mutator 
+	 * Picks the last terminal and mutates by picking a mutator 
 	 * randomly and applying it.
 	 * 
 	 * @param tree
@@ -156,7 +205,34 @@ public class BioFuzzMgr {
 	 * 
 	 */
 	public Boolean mutate(BioFuzzParseTree tree) {
+		
+		if(this.modifier == null) {
+			logger.debug("No modifier available");
+			return false;
+		}
+		
 		return modifier.mutate(tree);
+	}
+	
+	/**
+	 * 
+	 * Picks a terminal whose index lies in [lrange,rrange] 
+	 * and mutates by picking a mutator randomly and applying it.
+	 * 
+	 * @param tree
+	 * @param lrange lower bound of the range.
+	 * @param rrange upper bound of the range.
+	 * @return true if mutation was successful.
+	 * 
+	 */
+	public Boolean mutate(BioFuzzParseTree tree, int lrange, int rrange) {
+		
+		if(this.modifier == null) {
+			logger.debug("No modifier available");
+			return false;
+		}
+		
+		return modifier.mutate(tree, lrange, rrange);
 	}
 	
 	/**
@@ -171,6 +247,12 @@ public class BioFuzzMgr {
 	 * 
 	 */
 	public BioFuzzParseTree crossover (BioFuzzParseTree treeA, BioFuzzParseTree treeB) {
+		
+		if(this.modifier == null) {
+			logger.debug("No modifier available");
+			return null;
+		}
+		
 		BioFuzzParseTree tree  = null;
 		validator.doValidate(treeA);
 		validator.doValidate(treeB);
@@ -195,6 +277,12 @@ public class BioFuzzMgr {
 	 * 
 	 */
 	public List<BioFuzzParseNode> trace (BioFuzzParseTree tree, BioFuzzQuery q, TraceType type) {
+		
+		if(this.tracer == null) {
+			logger.debug("No tracer available");
+			return null;
+		}
+		
 		return tracer.doTrace(tree, q, type);
 	}
 	
@@ -208,6 +296,12 @@ public class BioFuzzMgr {
 	 * @return list of nodes that fulfill q or null
 	 */
 	public List<BioFuzzParseNode> traceSubNodes (BioFuzzParseNode node, BioFuzzQuery q, TraceType type) {
+		
+		if(this.tracer == null) {
+			logger.debug("No tracer available");
+			return null;
+		}
+		
 		return tracer.doTraceSubNodes(node, q,type);
 	}
 	
@@ -226,6 +320,11 @@ public class BioFuzzMgr {
 		
 		assert(tree != null);
 		assert(qlist.size() > 0);
+		
+		if(this.tracer == null) {
+			logger.debug("No tracer available");
+			return null;
+		}
 		
 		List<BioFuzzParseNode> res = null;
 		
@@ -258,6 +357,11 @@ public class BioFuzzMgr {
 	public List<BioFuzzParseNode> traceAll(List<BioFuzzParseNode> nlist, BioFuzzQuery q,TraceType type) {
 		List<BioFuzzParseNode> res = new Vector<BioFuzzParseNode>();
 		assert(nlist != null);
+		
+		if(this.tracer == null) {
+			logger.debug("No tracer available");
+			return null;
+		}
 		
 		if(nlist.size() <=0)
 			return null;

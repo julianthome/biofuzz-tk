@@ -57,11 +57,13 @@ public class BioFuzzQuoteMutator implements BioFuzzMutator {
 	final static Logger logger = LoggerFactory.getLogger(BioFuzzQuoteMutator.class);
 	
 	@Override
-	public void mutate(BioFuzzTokLst tokLst) {
+	public void mutate(BioFuzzTokLst tokLst, int tidx) {
 		
 		MutationType [] type = {MutationType.GBK};
 		
-		int tokIdx = tokLst.getSize()-2;
+		//int tokIdx = tokLst.getSize()-2;
+		
+		int tokIdx = tidx;
 		String s = tokLst.get(tokIdx);
 
 		Random rand = new Random();
@@ -91,6 +93,14 @@ public class BioFuzzQuoteMutator implements BioFuzzMutator {
 	@Override
 	public String getName() {
 		return "Case Mutator";
+	}
+
+	@Override
+	public boolean matches(String s) {
+		if(s.matches("[\"']") && s.length() == 1)
+			return true;
+		else
+			return false;
 	}
 	
 	

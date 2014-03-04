@@ -2,3 +2,6 @@
 	S -> Sa (not possible)
 	S -> aS (possible)
 	S -> a{a} (possible anyway)
+- direct left recursion is detected. For now, these cases are eliminated.
+- indirect left recursion is not detected yet (Have a look at the paper from Frost, R. et al.).
+- mutators are only working for single terminal nodes.

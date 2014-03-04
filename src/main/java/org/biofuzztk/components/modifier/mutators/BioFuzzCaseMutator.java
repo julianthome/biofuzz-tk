@@ -60,10 +60,11 @@ public class BioFuzzCaseMutator implements BioFuzzMutator {
 	final static Logger logger = LoggerFactory.getLogger(BioFuzzCaseMutator.class);
 	
 	@Override
-	public void mutate(BioFuzzTokLst tokLst) {
+	public void mutate(BioFuzzTokLst tokLst, int tidx) {
 		MutationType [] type = {MutationType.LOWERCASE, MutationType.UPPERCASE, MutationType.MIXED};
 		
-		int tokIdx = tokLst.getSize()-2;
+		//int tokIdx = tokLst.getSize()-2;
+		int tokIdx = tidx;
 		String s = tokLst.get(tokIdx);
 
 		
@@ -106,6 +107,16 @@ public class BioFuzzCaseMutator implements BioFuzzMutator {
 	public String getName() {
 		return "Case Mutator";
 	}
+
+	@Override
+	public boolean matches(String s) {
+		if(s.matches("[a-zA-z]+"))
+			return true;
+		else
+			return false;
+	}
+	
+	
 
 	
 

@@ -33,7 +33,7 @@ import org.biofuzztk.ptree.BioFuzzTokLst;
 public class BioFuzzCommentMutator implements BioFuzzMutator {
 	
 	@Override
-	public void mutate(BioFuzzTokLst lst) {
+	public void mutate(BioFuzzTokLst lst, int idx) {
 
 		lst.setDel("/**/");
 	}
@@ -41,6 +41,11 @@ public class BioFuzzCommentMutator implements BioFuzzMutator {
 	@Override
 	public String getName() {
 		return "BioFuzzCommentMutator";
+	}
+
+	@Override
+	public boolean matches(String s) {
+		return true;
 	}
 
 }
