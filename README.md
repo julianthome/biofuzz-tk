@@ -276,7 +276,7 @@ while(!t.getVal()) {
 }
 ```
 
-This will generate a random string that matches the CFG definition. The loop repeats until the parse-tree is complete according to the CFG. This might produce an expression like *( 330 ) + ( ( 291107 ) - 1 + ( ( 4 / ( ( 4 ) ) - 2 - ( ( 04 / ( 5 ) + ( ( 4 ) ) + 9 - 5 / ( ( ( 3 ) ) ) ) ) + 40 ) / 23526 / 9902 ) * 7 ) - ( ( 8 ) )*
+This will generate a random string that matches the CFG definition. The loop repeats until the parse-tree is complete according to the CFG. This might produce an expression like ``( 330 ) + ( ( 291107 ) - 1 + ( ( 4 / ( ( 4 ) ) - 2 - ( ( 04 / ( 5 ) + ( ( 4 ) ) + 9 - 5 / ( ( ( 3 ) ) ) ) ) + 40 ) / 23526 / 9902 ) * 7 ) - ( ( 8 ) )``
 
 
 #### String extension
