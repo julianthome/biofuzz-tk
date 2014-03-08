@@ -423,7 +423,8 @@ The tracer traverses each node of the parse-tree and whenever the return value o
 the corresponding node will be added to the return set of nodes. The BioFuzz Manager contains a member function *trace* 
 that calls the tracer with the parse tree to search, the query and the algorithm to use. For now, the two methodes breadth-first
 search (BFS) and depth-first search are implemented. Dependent on the algorithm, the nodes are added in-order to the resulting
-list. Given the code above, the list *nodeBfs* contains the following elements (in the given order): ``[+][*][+][/][-]``.
+list. Given the code above, the list *nodeBfs* contains the following elements (in the given order): ``[+][*][+][/][-]`` for
+the mathematical expression ``1+4*(5+2)/10-4``.
 
 
 
