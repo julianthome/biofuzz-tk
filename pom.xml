@@ -2,8 +2,9 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.biofuzztk</groupId>
   <artifactId>biofuzz-tk</artifactId>
-  <version>1.0</version>
+  <version>Alpha</version>
   <name>biofuzz-tk</name>
+  <url>https://github.com/julianthome/biofuzz-tk</url>
   <description>BioFuzz Toolkit helps you to parse strings and to perform operations on the resulting parse trees. It is suited to programs that leverage GP or similar techniques. The parsing and token generation happens based on you context-free grammar description. Further, it supports the two well-known GP operations: Mutation and Crossover.
 
 </description>
@@ -34,7 +35,9 @@
   		<version>4.11</version>
   	</dependency>
   </dependencies>
+  
   <properties>
   	<logback.version>1.0.13</logback.version>
   </properties>
+  
 </project>
