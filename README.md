@@ -397,4 +397,31 @@ mgr.mutate(tree,0,tree.getTokLstLen()-2);
 
 Given the BioFuzzMutator implementation above, the expression ``1+4*(5+2)/10-4`` might be mutated into ``6+4*(5+2)/10-4``
 
+#### Tracing
+
+The BioFuzz Toolkit incorporates a tracer that can be used in order to search for elements within a parse tree easily. The first thing
+to do, is to define an object that implements the *BioFuzzQuery* interface:
+
+
+``` java
+BioFuzzQuery q = new BioFuzzQuery() {
+@Override
+	public Boolean condition(BioFuzzParseNode node) {
+		if(node != null && node.getParent() != null) {
+			if ( node.getAtagType() == TagType.TERMINAL && node.getParent().getAtagName().equals("operator")) {
+				return true;
+			}
+		}
+		return false;
+};
+List<BioFuzzParseNode> nodesBfs = mgr.trace(tree, q, TraceType.BFS);
+```
+
+The tracer traverses each node of the parse-tree and whenever the return value of  the member-function *condition* is true,
+the corresponding node will be added to the return set of nodes. The BioFuzz Manager contains a member function *trace* 
+that calls the tracer with the parse tree to search, the query and the algorithm to use. For now, the two methodes breadth-first
+search (BFS) and depth-first search are implemented. Dependent on the algorithm, the nodes are added in-order to the resulting
+list. Given the code above, the list *nodeBfs* contains the following elements (in the given order): ``[+][*][+][/][-]``.
+
+
 

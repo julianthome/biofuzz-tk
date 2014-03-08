@@ -7,9 +7,13 @@ import java.util.Vector;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.biofuzztk.cfg.BioFuzzAttackTag.TagType;
 import org.biofuzztk.components.BioFuzzMgr;
+import org.biofuzztk.components.BioFuzzTracer.BioFuzzQuery;
+import org.biofuzztk.components.BioFuzzTracer.TraceType;
 import org.biofuzztk.components.modifier.BioFuzzMutator;
 import org.biofuzztk.components.tokenizer.BioFuzzTokenizer;
+import org.biofuzztk.ptree.BioFuzzParseNode;
 import org.biofuzztk.ptree.BioFuzzParseTree;
 import org.biofuzztk.ptree.BioFuzzTokLst;
 import org.junit.BeforeClass;
@@ -112,7 +116,7 @@ public class TestBioFuzzMath {
 	}
 
 	
-	@Test
+	//@Test
 	public void testCrossOver() {
 
 		logger.debug(">> Tree 0 creation");
@@ -127,6 +131,51 @@ public class TestBioFuzzMath {
 		logger.debug(">> After " + tree.getTokLst().toString());
 		
 
+		
+	}
+	
+	@Test
+	public void testTrace() {
+
+		logger.debug(">> Tree 0 creation");
+		
+		tLst0 = mgr.buildTrees("1+4*(5+2)/10-4");
+		BioFuzzParseTree tree = tLst0.get(0);
+		//logger.debug(tree.toString());
+		mgr.validate(tree);
+		
+		BioFuzzQuery q = new BioFuzzQuery() {
+
+			@Override
+			public Boolean condition(BioFuzzParseNode node) {
+				
+				 if(node != null && node.getParent() != null) {
+					if ( node.getAtagType() == TagType.TERMINAL && node.getParent().getAtagName().equals("operator")) {
+						return true;
+					}
+				 } 
+				 
+				 return false;
+			}
+			
+		};
+		
+		
+		List<BioFuzzParseNode> nodesBfs = mgr.trace(tree, q, TraceType.BFS);
+		List<BioFuzzParseNode> nodesDfs = mgr.trace(tree, q, TraceType.DFS);
+		
+		assert(nodesDfs != null);
+		assert(nodesBfs != null);
+		
+		logger.debug("BFS");
+		for(BioFuzzParseNode nod : nodesBfs) {
+			logger.debug(nod.getAtagName());
+		}
+		
+		logger.debug("DFS");
+		for(BioFuzzParseNode nod : nodesDfs) {
+			logger.debug(nod.getAtagName());
+		}
 		
 	}
 
