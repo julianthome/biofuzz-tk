@@ -39,7 +39,7 @@
   	<repository>
   		<id>internal.repo</id>
   		<name>Temporary Staging Repository</name>
-  		<url>file://${project.build.directory}/mvn-repo</url>
+  		<url>file://${project.build.directory}/biofuzz-mvn-repo</url>
   	</repository>
   
   </distributionManagement>
@@ -56,7 +56,7 @@
 	        <artifactId>maven-deploy-plugin</artifactId>
 	        <version>2.8.1</version>
 	        <configuration>
-	            <altDeploymentRepository>internal.repo::default::file://${project.build.directory}/mvn-repo</altDeploymentRepository>
+	            <altDeploymentRepository>internal.repo::default::file://${project.build.directory}/biofuzz-mvn-repo</altDeploymentRepository>
 	        </configuration>
 	    </plugin>
 	    
@@ -74,16 +74,15 @@
             <artifactId>site-maven-plugin</artifactId>
             <version>0.8</version>
             <configuration>
-                <message>Maven artifacts for ${project.version}</message>  <!-- git commit message -->
-                <noJekyll>true</noJekyll>                                  <!-- disable webpage processing -->
-                <outputDirectory>${project.build.directory}/mvn-repo</outputDirectory> <!-- matches distribution management repository url above -->
-                <branch>refs/heads/mvn-repo</branch>                       <!-- remote branch name -->
+                <message>Maven artifacts for ${project.version}</message>
+                <noJekyll>true</noJekyll>
+                <outputDirectory>${project.build.directory}/biofuzz-mvn-repo</outputDirectory>
+		<branch>refs/heads/master</branch>
                 <includes><include>**/*</include></includes>
-                <repositoryName>https://github.com/julianthome/biofuzz-mvn-repo.git</repositoryName>      <!-- github repo name -->
-                <repositoryOwner>julianthome</repositoryOwner>    <!-- github username  -->
+                <repositoryName>biofuzz-mvn-repo</repositoryName>
+                <repositoryOwner>julianthome</repositoryOwner>
             </configuration>
             <executions>
-              <!-- run site-maven-plugin's 'site' target as part of the build's normal 'deploy' phase -->
               <execution>
                 <goals>
                   <goal>site</goal>
