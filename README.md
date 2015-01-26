@@ -18,7 +18,7 @@ Jump to ...
 
 ## What is biofuzz-tk
 
-BioFuzz Toolkit helps you to parse strings and to perform operations (modification/extension) on the resulting parse trees. It is suited to programs that leverage genetic programming (GP) or similar techniques. The parsing and token-generation happens based on a context-free grammar description. Further, it supports the two well-known GP operations: Mutation and Crossover.
+BioFuzz Toolkit helps you to parse strings and to perform operations (modification/ extension) on the resulting parse trees. It is suited to programs that leverage genetic programming (GP) or similar techniques. The parsing and token-generation takes place based on a context-free grammar (CFG)description. Further, it supports the two well-known GP operations: Mutation and Crossover.
 
 ## How to use it
 
@@ -26,10 +26,8 @@ The following examples give you an intuition how the BioFuzz Toolkit can be used
 
 ### Introductory Example
 
-Suppose you want to parse the string *aaaaaa* matches the grammar definition
-	S ->  a {S}
-
-You can define a CFG configuration *cfg.xml* for biofuzz-tk that looks as follows:
+Suppose you want to parse the string *aaaaaa* that matches the grammar definition ``S->a{S}``. You can 
+define a CFG configuration *cfg.xml* for biofuzz-tk that looks as follows:
 
 ```
 <attackcfg>
@@ -48,7 +46,7 @@ You can define a CFG configuration *cfg.xml* for biofuzz-tk that looks as follow
 </attackcfg>
 ```
 
-The whole configuration is embedded in the *attackcfg*-tag. This tag contains one or more *rule*-tags. A *rule*-tag represents a production rule. The *key*-tag defines the name of the non-terminal *S* (left-hand side of a production rule) which is expected to be present, since it is the starting-symbol. The *val*-tag contains the actual production rule definition. The meta-tags *start* and *stop* are used to indicate the starting/stopping terminals/non-terminals. The *const*-tag is used to define terminals whereas the *var*-tag references non-terminal definitions. When you are writing your own configuration file, please make sure, that all the non-terminals that are references do have their own rule-definition. The biofuzz-tk definition is EBNF-alike. The following XML-tags can be used.
+The whole configuration is embedded in the *attackcfg*-tag. This tag contains one or more *rule*-tags. A *rule*-tag represents a production rule. The *key*-tag defines the name of the non-terminal *S* (left-hand side of a production rule) which is expected to be present, since it is the starting-symbol. The *val*-tag contains the actual production rule definition. The meta-tags *start* and *stop* are used to indicate the starting/ stopping terminals/ non-terminals. The *const*-tag is used to define terminals whereas the *var*-tag references non-terminal definitions. When you are writing your own configuration file, please make sure, that all the non-terminals that are references do have their own rule-definition. The biofuzz-tk definition is EBNF-alike. The following XML-tags can be used.
 
 
 | biofuzz-tk        | meaning | 
@@ -60,7 +58,7 @@ The whole configuration is embedded in the *attackcfg*-tag. This tag contains on
 |  regexp |  to match regular expressions that are defined via the label-attribute.  |
 
 
-The BioFuzz Manager is the object that manages every operation that can be executed on a parse-tree including the parse-tree generation itself. To read in the configuration you habe to create a Manager object and pass the path to the configuration file as a paramter. Besides that you have to implement a tokenizer as well and pass it to the manager. Before the parsing takes place, a string has to be split it tokens. The interface-method *tokenize* from the interface *BioFuzzTokenizer* should return an array of tokens. An appropriate tokenizer implementation might looks as follows:
+The *BioFuzzManager* is the main class that manages every operation that can be executed on a parse-tree including the parse-tree generation itself. For the purpose of reading the configuration, you have to create a Manager object passing the path to the configuration file as first parameter. Moreover, you have to implement a tokenizer and pass it to the manager. Before the actual parsing takes place, the string has to split into tokens (lexing). The interface-method *tokenize* from the interface *BioFuzzTokenizer* returns an array of tokens. An appropriate tokenizer implementation might look as follows:
 
 ``` java
 BioFuzzTokenizer tokenizer = new BioFuzzTokenizer() {
@@ -72,14 +70,14 @@ BioFuzzTokenizer tokenizer = new BioFuzzTokenizer() {
 };
 ```
 
-The next important step is the creation of a BioFuzz Manager object itself by typing:
+The next step is the creation of a *BioFuzzManager* object by typing:
 
 
 ``` java
 BioFuzzMgr mgr = new BioFuzzMgr("cfg.xml", tokenizer); ;
 ```
 
-If you want to parse the string *aaaaaa*, you can use the following instruction:
+Finally, if you want to parse the string *aaaaaa*, you can use the following instruction:
 
 ``` java
 List<BioFuzzParseTree> tLst = mgr.buildTrees("aaaaaa");
@@ -87,7 +85,7 @@ BioFuzzParseTree tree = tLst.get(0);
 mgr.validate(tree);
 ```
 
-The BioFuzz Manager will now tokenize the string, parse it and return al list of parse-trees, i.e. all parse-trees that resemble all possible paths through the CFG that can be taken in order to generate the string *aaaaaa*. The second line just shows how to access the first parse-tree of the list. The third line shows the validation method that is incorporated in the manger. It just traverses the tree and checks whether it is complete according to the CFG or not. This information is important for the tokenizer which we will discuss later. The resulting parse tree might look as follows (*toString()* method is implemented).
+The *BioFuzzManager* tokenizes the string, parses it and returns a list of parse-trees, i.e. all parse-trees that resemble all possible paths through the CFG that can be taken in order to generate the string *aaaaaa*. The second line of the listing above shows how to access the first parse-tree of the list. The third line shows the validation method that is incorporated in the manger. It just traverses the tree and checks whether it is complete according to the CFG or not. This information is important for the tokenizer which we will discuss later. The resulting parse-tree might look as follows:
 
 	* [ ROOT(S): validity:(true)]
 	|--(tok_idx: 0 descIdx: 1 id:1)[AttackTag: a(TERMINAL val:-5)(true)]
@@ -175,7 +173,7 @@ A CFG configuration for mathematical expressions might look as follows.
 </attackcfg>
 ```
 
-Lets suppose you want to parse the expression *1+4*(5+2)/10-4*. The following code will do that for you:
+Let's suppose you want to parse the expression *1+4*(5+2)/10-4*. The following code will do that for you:
 
 ``` java
 BioFuzzTokenizer tokenizer = new BioFuzzTokenizer() {
@@ -278,12 +276,12 @@ while(!t.getVal()) {
 }
 ```
 
-This will generate a random string that matches the CFG definition. The loop repeats until the parse-tree is complete according to the CFG. This might produce an expression like ``( 330 ) + ( ( 291107 ) - 1 + ( ( 4 / ( ( 4 ) ) - 2 - ( ( 04 / ( 5 ) + ( ( 4 ) ) + 9 - 5 / ( ( ( 3 ) ) ) ) ) + 40 ) / 23526 / 9902 ) * 7 ) - ( ( 8 ) )``
+This will generate a random string that matches the CFG definition. The loop repeats until the parse-tree is complete according to the CFG. This might produce an expression like ``(330)+((291107)-1+((4/((4))-2-((04/(5)+((4))+9-5/(((3)))))+40)/23526/9902)*7)-((8))``
 
 
 #### String extension
 
-The BioFuzz toolkit has the capability of extending Strings on a context-free grammar. 
+The BioFuzz toolkit has the capability of extending Strings whose prefix matches a given CFG description. This is essential for extending a given string.  
 
 ``` java
 List<BioFuzzParseTree> tLst0 = mgr.buildTrees("1+4*(5+2)/10-4+");
@@ -291,11 +289,11 @@ mgr.validate(tLst0.get(0));
 mgr.extend(tLst0.get(0));
 ```
 
-The Java code above might yield the new expression ``1 + 4 * ( 5 + 2 ) / 10 - 4 + 6``. The extend function generates a single new terminal (and non-terminals associated with that particular termina) for each call. The BioFuzz toolkit scans the parse-tree for so called extension points. An extension point is a non-terminal where new terminal child nodes can be appended to. Another feature that you can see in the code above is partial parsing. The BioFuzz  toolkit has the capability of parsing strings that yield incomplete parse trees. These parse trees can be extended with the string extension capabilities.
+The Java code above might yield the new expression ``1+4*(5+2)/10-4+6``. The extend function generates a single new terminal associated with that particular terminal for each call. The BioFuzz toolkit scans the parse-tree for so called extension points. An extension point is a non-terminal where new terminal child nodes can be appended to. Another feature that you can see in the code above is partial parsing. The BioFuzz toolkit has the capability of parsing strings that yield incomplete parse trees. These parse trees can be extended with the string extension capabilities.
 
 #### Crossover
 
-Crossover can be seen as the exchange of semantically equal subtrees between two individuals (represented as parse-trees). The Java code for performing Crossover looks as follows:
+Crossover is a well known concept in genetic programming ([GP](http://en.wikipedia.org/wiki/Genetic_programming)) and can be seen as the exchange of semantically equal subtrees between two individuals (represented as parse-trees). The Java code for performing Crossover looks as follows:
 
 ``` java
 List<BioFuzzParseTree> tLst0 = mgr.buildTrees("1+4*(5+2)/10-4");
@@ -307,7 +305,7 @@ BioFuzzParseTree I_B = tLst1.get(0);
 BioFuzzParseTree I_C = mgr.crossover(I_A, I_B);
 ```
 
-In the example above we have two parent individuals *I_A* and *I_B*. The crossover-function yields a new parse-tree *I_C* .  The function scans both trees for semantically equivalent parse-trees. It takes a non-terminal *NT_B* from *I_B* and exchanges the non-terminal *NT_A* which is semantically equivalent to *NT_B* with *NT_B*.  After that call, you might get a new child individual *I_C* that looks as follows:
+In the example above we have two parent individuals *I_A* and *I_B*. The crossover-function yields a new parse-tree *I_C* . It scans both trees for finding semantically equivalent parse-trees. It takes a non-terminal *NT_B* from *I_B* and exchanges the non-terminal *NT_A* which is semantically equivalent to *NT_B* with *NT_B*.  After that call, you might get a new child individual *I_C* that looks as follows:
 
 		* [ ROOT(S): validity:(true)]
 		|--(tok_idx: 0 descIdx: 1 id:1)[AttackTag: term(NON_TERMINAL val:-4)(true)]
@@ -350,7 +348,7 @@ In the example above we have two parent individuals *I_A* and *I_B*. The crossov
 
 #### Mutation
 
-Mutation is an operation that changes the representation of a single terminal node. The modification of non-terminals (or a set of terminals that are subordinate to a non-terminal) is not yet implemented.  You can implement your own mutators. An example of a mutator implementation is given below:
+Like Crossover, Mutation is a concept used in [GP](http://en.wikipedia.org/wiki/Genetic_programming). It is an operation that changes the representation of a single terminal node. The modification of non-terminals (or a set of terminals that are subordinate to a non-terminal) is not yet implemented.  You can implement your own mutators. An example of a mutator implementation is given below:
 
 ``` java
 BioFuzzMutator mut = new BioFuzzMutator() {
@@ -401,8 +399,8 @@ Given the BioFuzzMutator implementation above, the expression ``1+4*(5+2)/10-4``
 
 #### Tracing
 
-The BioFuzz Toolkit incorporates a tracer that can be used in order to search for elements within a parse tree easily. The first thing
-to do, is to define an object that implements the *BioFuzzQuery* interface:
+The BioFuzz Toolkit incorporates a tracer, an interface to search for elements within a parse-tree. The first thing
+to do is the definition of an object that implements the *BioFuzzQuery* interface:
 
 
 ``` java
@@ -419,10 +417,10 @@ BioFuzzQuery q = new BioFuzzQuery() {
 List<BioFuzzParseNode> nodesBfs = mgr.trace(tree, q, TraceType.BFS);
 ```
 
-The tracer traverses each node of the parse-tree and whenever the return value of  the member-function *condition* is true,
+The tracer traverses each node of the parse-tree and whenever the return value of the member-function *condition* is true,
 the corresponding node will be added to the return set of nodes. The BioFuzz Manager contains a member function *trace* 
 that calls the tracer with the parse tree to search, the query and the algorithm to use. For now, the two methodes breadth-first
-search (BFS) and depth-first search are implemented. Dependent on the algorithm, the nodes are added in-order to the resulting
+search (BFS) and depth-first search (DFS) are implemented. Dependent on the algorithm, the nodes are added in-order to the resulting
 list. Given the code above, the list *nodeBfs* contains the following elements (in the given order): ``[+][*][+][/][-]`` for
 the mathematical expression ``1+4*(5+2)/10-4``.
 
