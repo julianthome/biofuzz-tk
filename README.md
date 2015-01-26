@@ -58,7 +58,7 @@ The whole configuration is embedded in the *attackcfg*-tag. This tag contains on
 |  regexp |  to match regular expressions that are defined via the label-attribute.  |
 
 
-The *BioFuzzManager* is the main class that manages every operation that can be executed on a parse-tree including the parse-tree generation itself. For the purpose of reading the configuration, you have to create a Manager object passing the path to the configuration file as first parameter. Moreover, you have to implement a tokenizer and pass it to the manager. Before the actual parsing takes place, the string has to split into tokens (lexing). The interface-method *tokenize* from the interface *BioFuzzTokenizer* returns an array of tokens. An appropriate tokenizer implementation might look as follows:
+The *BioFuzzManager* is the main class that manages every operation that can be executed on a parse-tree including the parse-tree generation itself. For the purpose of reading the configuration, you have to create a Manager object by passing the path to the configuration file as first parameter. Moreover, you have to implement a tokenizer and pass it to the manager. Before the actual parsing takes place, the string has to be split into tokens (lexing). For this purpose, the *BioFuzzTokenizer* interface-method *tokenize* from the interface *BioFuzzTokenizer* has to be implemented. It returns an array of tokens. A sample tokenizer implementation might look as follows:
 
 ``` java
 BioFuzzTokenizer tokenizer = new BioFuzzTokenizer() {
@@ -77,7 +77,7 @@ The next step is the creation of a *BioFuzzManager* object by typing:
 BioFuzzMgr mgr = new BioFuzzMgr("cfg.xml", tokenizer); ;
 ```
 
-Finally, if you want to parse the string *aaaaaa*, you can use the following instruction:
+Finally, if you want to parse the string *aaaaaa*, you can use the following instructions:
 
 ``` java
 List<BioFuzzParseTree> tLst = mgr.buildTrees("aaaaaa");
@@ -85,7 +85,7 @@ BioFuzzParseTree tree = tLst.get(0);
 mgr.validate(tree);
 ```
 
-The *BioFuzzManager* tokenizes the string, parses it and returns a list of parse-trees, i.e. all parse-trees that resemble all possible paths through the CFG that can be taken in order to generate the string *aaaaaa*. The second line of the listing above shows how to access the first parse-tree of the list. The third line shows the validation method that is incorporated in the manger. It just traverses the tree and checks whether it is complete according to the CFG or not. This information is important for the tokenizer which we will discuss later. The resulting parse-tree might look as follows:
+The *BioFuzzManager* tokenizes the string, parses it, and returns a list of parse-trees, i.e. all parse-trees that resemble all possible paths through the CFG that can be taken in order to generate the string *aaaaaa*. The second line of the listing above shows how to access the first parse-tree of the list. The third line shows the validation method that is incorporated in the manger. It just traverses the tree and checks whether it is complete according to the CFG or not. This information is important for the tokenizer which we will discuss later. The resulting parse-tree might look as follows:
 
 	* [ ROOT(S): validity:(true)]
 	|--(tok_idx: 0 descIdx: 1 id:1)[AttackTag: a(TERMINAL val:-5)(true)]
@@ -173,7 +173,7 @@ A CFG configuration for mathematical expressions might look as follows.
 </attackcfg>
 ```
 
-Let's suppose you want to parse the expression *1+4*(5+2)/10-4*. The following code will do that for you:
+Let's suppose you want to parse the expression ``1+4*(5+2)/10-4``. The following code will do that for you:
 
 ``` java
 BioFuzzTokenizer tokenizer = new BioFuzzTokenizer() {
@@ -281,7 +281,7 @@ This will generate a random string that matches the CFG definition. The loop rep
 
 #### String extension
 
-The BioFuzz toolkit has the capability of extending Strings whose prefix matches a given CFG description. This is essential for extending a given string.  
+The BioFuzz toolkit has the capability of extending Strings whose prefix matches a given CFG description.
 
 ``` java
 List<BioFuzzParseTree> tLst0 = mgr.buildTrees("1+4*(5+2)/10-4+");
@@ -399,8 +399,8 @@ Given the BioFuzzMutator implementation above, the expression ``1+4*(5+2)/10-4``
 
 #### Tracing
 
-The BioFuzz Toolkit incorporates a tracer, an interface to search for elements within a parse-tree. The first thing
-to do is the definition of an object that implements the *BioFuzzQuery* interface:
+The BioFuzz Toolkit incorporates a tracer, an interface to search for elements within a parse-tree. In the example
+below, one can see an example implementation of the *BioFuzzQuery* interface:
 
 
 ``` java
@@ -419,10 +419,10 @@ List<BioFuzzParseNode> nodesBfs = mgr.trace(tree, q, TraceType.BFS);
 
 The tracer traverses each node of the parse-tree and whenever the return value of the member-function *condition* is true,
 the corresponding node will be added to the return set of nodes. The BioFuzz Manager contains a member function *trace* 
-that calls the tracer with the parse tree to search, the query and the algorithm to use. For now, the two methodes breadth-first
-search (BFS) and depth-first search (DFS) are implemented. Dependent on the algorithm, the nodes are added in-order to the resulting
-list. Given the code above, the list *nodeBfs* contains the following elements (in the given order): ``[+][*][+][/][-]`` for
-the mathematical expression ``1+4*(5+2)/10-4``.
+that calls the tracer with the parse tree to search, the query and the algorithm to use. The two standard search 
+methods breadth-first search (BFS) and depth-first search (DFS) are both implemented. Dependent on the algorithm, the nodes that match
+the user-defined condition are added in-order. Given the code above, the list *nodeBfs* contains the following elements: ``[+][*][+][/][-]`` 
+with respect to the mathematical expression ``1+4*(5+2)/10-4``.
 
 
 
