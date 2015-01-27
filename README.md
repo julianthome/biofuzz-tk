@@ -22,7 +22,7 @@ BioFuzz Toolkit helps you to parse strings and to perform operations (modificati
 
 ## How to use it
 
-The following examples give you an intuition how the BioFuzz Toolkit can be used.
+The following examples give an insight of how the BioFuzz Toolkit can be used.
 
 ### Introductory Example
 
@@ -46,7 +46,7 @@ define a CFG configuration *cfg.xml* for biofuzz-tk that looks as follows:
 </attackcfg>
 ```
 
-The whole configuration is embedded in the *attackcfg*-tag. This tag contains one or more *rule*-tags. A *rule*-tag represents a production rule. The *key*-tag defines the name of the non-terminal *S* (left-hand side of a production rule) which is expected to be present, since it is the starting-symbol. The *val*-tag contains the actual production rule definition. The meta-tags *start* and *stop* are used to indicate the starting/ stopping terminals/ non-terminals. The *const*-tag is used to define terminals whereas the *var*-tag references non-terminal definitions. When you are writing your own configuration file, please make sure, that all the non-terminals that are references do have their own rule-definition. The biofuzz-tk definition is EBNF-alike. The following XML-tags can be used.
+The whole configuration is embedded in the *attackcfg*-tag. This tag contains one or more *rule*-tags. A *rule*-tag represents a production rule. The *key*-tag defines the name of the non-terminal *S* (left-hand side of a production rule) which is expected to be present, since it is the starting-symbol. The *val*-tag contains the actual production rule definition. The meta-tags *start* and *stop* are used to indicate the starting/ stopping terminals/ non-terminals. The *const*-tag is used to define terminals whereas the *var*-tag refers to non-terminal definitions. When writing your own configuration file, please make sure that all the non-terminals that are references do have their own rule-definition. The biofuzz-tk definition is EBNF-alike. The following XML-tags can be used.
 
 
 | biofuzz-tk        | meaning | 
@@ -58,7 +58,7 @@ The whole configuration is embedded in the *attackcfg*-tag. This tag contains on
 |  regexp |  to match regular expressions that are defined via the label-attribute.  |
 
 
-The *BioFuzzManager* is the main class that manages every operation that can be executed on a parse-tree including the parse-tree generation itself. For the purpose of reading the configuration, you have to create a Manager object by passing the path to the configuration file as first parameter. Moreover, you have to implement a tokenizer and pass it to the manager. Before the actual parsing takes place, the string has to be split into tokens (lexing). For this purpose, the *BioFuzzTokenizer* interface-method *tokenize* from the interface *BioFuzzTokenizer* has to be implemented. It returns an array of tokens. A sample tokenizer implementation might look as follows:
+The *BioFuzzManager* is the main class that manages every operation that can be executed on a parse-tree, including the parse-tree generation itself. For the purpose of reading the configuration, you have to create a Manager object by passing the path to the configuration file as first parameter. Moreover, you have to implement a tokenizer and pass it to the manager. Before the actual parsing takes place, the string has to be split into tokens (lexing). For this purpose, the *BioFuzzTokenizer* interface-method *tokenize* from the interface *BioFuzzTokenizer* has to be implemented. It returns an array of tokens. A sample tokenizer implementation might look as follows:
 
 ``` java
 BioFuzzTokenizer tokenizer = new BioFuzzTokenizer() {
@@ -375,9 +375,9 @@ BioFuzzMutator mut = new BioFuzzMutator() {
 };
 ```
 
-The interface *BioFuzzMutator* has three methods that one has to implement. The *mutate* method takes a list of tokens and an index, that refers to the token in *lst* that is about to be mutated. The method *getName* just returns the name of the mutator and the method *matches* is a constraint on the token. A mutator is only called if this constraint is true.
+The interface *BioFuzzMutator* has three methods that one has to implement. The *mutate* method takes a list of tokens and an index, that refers to the token in *lst* that is about to be mutated. The method *getName* just returns the name of the mutator, and the method *matches* is a constraint on the token. A mutator is only called if this constraint is true.
 
-A list of mutator can be passed as a parameter to the BioFuzz Manager.
+A list of mutators may be passed as a parameter to the BioFuzz Manager.
 
 ``` java
 List<BioFuzzMutator> lmut = new Vector<BioFuzzMutator>();
@@ -418,9 +418,9 @@ List<BioFuzzParseNode> nodesBfs = mgr.trace(tree, q, TraceType.BFS);
 ```
 
 The tracer traverses each node of the parse-tree and whenever the return value of the member-function *condition* is true,
-the corresponding node will be added to the return set of nodes. The BioFuzz Manager contains a member function *trace* 
+the corresponding node is added to the return set of nodes. The BioFuzz Manager contains a member function *trace* 
 that calls the tracer with the parse tree to search, the query and the algorithm to use. The two standard search 
-methods breadth-first search (BFS) and depth-first search (DFS) are both implemented. Dependent on the algorithm, the nodes that match
+methods breadth-first search (BFS) and depth-first search (DFS) are both implemented. Depending on the algorithm, the nodes that match
 the user-defined condition are added in-order. Given the code above, the list *nodeBfs* contains the following elements: ``[+][*][+][/][-]`` 
 with respect to the mathematical expression ``1+4*(5+2)/10-4``.
 
